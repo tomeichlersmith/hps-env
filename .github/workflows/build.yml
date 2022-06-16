@@ -4,7 +4,7 @@ name: Container Build
 on:
   push:
     paths:
-      - 'hps-env/context/**'
+      - 'context/**'
       - '.github/workflows/ci.yml'
     branches:
       - '**'
@@ -90,8 +90,8 @@ jobs:
       if: ${{contains(steps.generate_tag.outputs.retag,'noop')}}
       uses: docker/build-push-action@v2
       with:
-        context: hps-env/context
-        file: hps-env/context/Dockerfile
+        context: context
+        file: context/Dockerfile
         push: true 
         cache-from: type=local,src=/tmp/.buildx-cache
         cache-to: type=local,dest=/tmp/.buildx-cache
