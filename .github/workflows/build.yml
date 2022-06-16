@@ -14,7 +14,6 @@ on:
 env:
   DOCKER_REPO: tomeichlersmith/hps-env
 
-# workflow consists of one building and testing job
 jobs:
   build:
     runs-on: ubuntu-latest
