@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# reset version for later deduction
+unset HPS_ENV_VERSION
+
+# tagged releases of script put a hard-coded version here
+
 ####################################################################################################
 # hps-env.sh
 #   This script is intended to define all the container aliases required
@@ -82,27 +87,24 @@ if ! __hps_which_os; then
 fi
 
 ####################################################################################################
-# __hps_env_version
-#   Deduce the version of the environment script
+# Deduce the version of the environment script
+#   We do this at source-time so that the version of the environment is set when
+#   the environment is constructed
 ####################################################################################################
-__hps_env_version() {
-  # easy case -> env variable already set by script
-  #   i.e. this is a tagged release of the script
-  if [ ! -z ${HPS_ENV_VERSION+x} ]; then
-    echo ${HPS_ENV_VERSION}
-    return 0
-  fi
-
-  # can we find the env repo and call git describe --tags
+if [ -z ${HPS_ENV_VERSION+x} ]; then
+  # HPS_ENV_VERSION is not set yet, we are NOT a tagged release of the script
+  export HPS_ENV_VERSION="unversioned" # default if we don't satisfy our deduction criteria
   if hash git &> /dev/null; then
-    cd ${HPS_ENV_SCRIPT_DIR}
-    git describe --tags
-    return $?
+    # we have git so we can (hopefully) deduce version from where env script is
+    script_dir="$( cd -- "$( dirname -- "${BASH_SOURCE[0]:-$0}"; )" &> /dev/null && pwd 2> /dev/null; )";
+    echo ${script_dir}
+    if [ -d ${script_dir}/.git ]; then
+      echo "deducing.."
+      # git dir exists in script dir, lets deduce it
+      export HPS_ENV_VERSION=$(git -C ${script_dir} describe --tags)
+    fi
   fi
-
-  echo "unversioned"
-  return 0
-}
+fi
 
 ####################################################################################################
 # We have gotten here after determining that we definitely have a container runner 
@@ -295,7 +297,7 @@ __hps_list() {
 #   Print the configuration of the current setup
 ####################################################################################################
 __hps_config() {
-  echo "hps-env version: $(__hps_env_version)"
+  echo "hps-env version: ${HPS_ENV_VERSION}"
   echo "uname: $(uname -a)"
   echo "OSTYPE: ${OSTYPE}"
   echo "Display Port: ${HPS_CONTAINER_DISPLAY}"

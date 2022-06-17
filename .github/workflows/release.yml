@@ -1,0 +1,25 @@
+
+name: Release env
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  upload-env:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+    steps:
+    - 
+      name: Get env Script
+      uses: actions/checkout@v2
+    -
+      name: Write env Version into Script
+      run: sed -i "6i export HPS_ENV_VERSION=$(git describe --tags)" env.sh
+    -
+      name: Upload env Script to Release
+      uses: svenstaro/upload-release-action@v2
+      with:
+        file: env.sh
