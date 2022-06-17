@@ -21,7 +21,7 @@ RUN mkdir ${__hep_env_script_d__}
 ENV EXTERNAL_INSTALL_DIR /externals
 ENV PATH="${EXTERNAL_INSTALL_DIR}/bin:${PATH}"
 ENV LD_LIBRARY_PATH="${EXTERNAL_INSTALL_DIR}/lib"
-ENV PYTHONPATH="${EXTERNAL_INSTALL_DIR}/lib:${EXTERNAL_INSTALL_DIR}/python"
+ENV PYTHONPATH="${EXTERNAL_INSTALL_DIR}/lib:${EXTERNAL_INSTALL_DIR}/python:${EXTERNAL_INSTALL_DIR}/lib/python"
 ENV CMAKE_PREFIX_PATH="${EXTERNAL_INSTALL_DIR}" 
 
 #run environment setup when docker container is launched and decide what to do from there
