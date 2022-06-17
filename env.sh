@@ -660,8 +660,16 @@ __hps_complete_directory() {
 #   bash variable 'curr_word'.
 ####################################################################################################
 __hps_complete_command() {
+  # generate up-to-date list of options
+  local _options="$@ cmake make python root rootbrowse"
+  if [ ! -z ${HPS_CONTAINER_INSTALL} ]; then
+    for exe in ${HPS_CONTAINER_INSTALL}/bin/*; do
+      [ -x ${exe} ] || continue; # skip non-executable matches
+      _options="$_options $(basename $exe)"
+    done
+  fi
   # match current word (perhaps empty) to the list of options
-  COMPREPLY=($(compgen -W "$@ cmake make python root rootbrowse" "$curr_word"))
+  COMPREPLY=($(compgen -W "$_options" "$curr_word"))
 }
 
 ####################################################################################################
