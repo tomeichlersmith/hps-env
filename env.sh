@@ -96,12 +96,9 @@ if [ -z ${HPS_ENV_VERSION+x} ]; then
   export HPS_ENV_VERSION="unversioned" # default if we don't satisfy our deduction criteria
   if hash git &> /dev/null; then
     # we have git so we can (hopefully) deduce version from where env script is
-    script_dir="$( cd -- "$( dirname -- "${BASH_SOURCE[0]:-$0}"; )" &> /dev/null && pwd 2> /dev/null; )";
-    echo ${script_dir}
-    if [ -d ${script_dir}/.git ]; then
-      echo "deducing.."
+    if [ -d ${HPS_ENV_SCRIPT_DIR}/.git ]; then
       # git dir exists in script dir, lets deduce it
-      export HPS_ENV_VERSION=$(git -C ${script_dir} describe --tags)
+      export HPS_ENV_VERSION=$(git -C ${HPS_ENV_SCRIPT_DIR} describe --tags)
     fi
   fi
 fi
@@ -509,7 +506,6 @@ __hps_source() {
     fi
     hps $_subcmd || return $?
   done < $1
-  cd - &> /dev/null
   return 0
 }
 
@@ -754,10 +750,20 @@ __hps_complete() {
 complete -F __hps_complete hps
 
 ####################################################################################################
-# If the default environment file exists, source it.
-# Otherwise, trust that the user knows what they are doing.
+# The user can setup a default environment in three cascading ways
+#   1. Have a file at ~/.hpsrc
+#   2. Define a file in the HPSRC environment variable
+#   3. Give a file as an argument when source the environment script
 ####################################################################################################
 
 if [[ -f $HOME/.hpsrc ]]; then
   hps source $HOME/.hpsrc
+fi
+
+if [[ ! -z ${HPSRC+x} ]] && [[ -f ${HPSRC} ]]; then
+  hps source ${HPSRC}
+fi
+
+if [[ ! -z $1 ]] && [[ -f $1 ]]; then
+  hps source $1
 fi
