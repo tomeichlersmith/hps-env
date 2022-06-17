@@ -1,7 +1,5 @@
 #!/bin/bash
 
-export __hps_env_sh_version="v0.1.0"
-
 ####################################################################################################
 # hps-env.sh
 #   This script is intended to define all the container aliases required
@@ -18,6 +16,9 @@ export __hps_env_sh_version="v0.1.0"
 #   The file $HOME/.hpsrc handles the default environment setup for the
 #   container. Look there for persisting your custom settings.
 ####################################################################################################
+
+# The directory this env script is in is important for deducing its version
+export HPS_ENV_SCRIPT_DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]:-$0}"; )" &> /dev/null && pwd 2> /dev/null; )";
 
 ####################################################################################################
 # All of this setup requires us to be in a bash shell.
@@ -79,6 +80,29 @@ if ! __hps_which_os; then
   echo "[hps-env.sh] [WARN] Unable to detect OS Type from '${OSTYPE}' or '$(uname -a)'"
   echo "    You will *not* be able to run display-connected programs."
 fi
+
+####################################################################################################
+# __hps_env_version
+#   Deduce the version of the environment script
+####################################################################################################
+__hps_env_version() {
+  # easy case -> env variable already set by script
+  #   i.e. this is a tagged release of the script
+  if [ ! -z ${HPS_ENV_VERSION+x} ]; then
+    echo ${HPS_ENV_VERSION}
+    return 0
+  fi
+
+  # can we find the env repo and call git describe --tags
+  if hash git &> /dev/null; then
+    cd ${HPS_ENV_SCRIPT_DIR}
+    git describe --tags
+    return $?
+  fi
+
+  echo "unversioned"
+  return 0
+}
 
 ####################################################################################################
 # We have gotten here after determining that we definitely have a container runner 
@@ -271,11 +295,12 @@ __hps_list() {
 #   Print the configuration of the current setup
 ####################################################################################################
 __hps_config() {
-  echo "hps-env version: ${__hps_env_sh_version}"
+  echo "hps-env version: $(__hps_env_version)"
   echo "uname: $(uname -a)"
   echo "OSTYPE: ${OSTYPE}"
   echo "Display Port: ${HPS_CONTAINER_DISPLAY}"
   echo "Container Mounts: ${HPS_CONTAINER_MOUNTS[@]}"
+  echo "Container Install: ${HPS_CONTAINER_INSTALL}"
   __hps_container_config
   return $?
 }
