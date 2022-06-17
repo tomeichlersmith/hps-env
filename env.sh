@@ -1,5 +1,7 @@
 #!/bin/bash
 
+export __hps_env_sh_version="v0.1.0"
+
 ####################################################################################################
 # hps-env.sh
 #   This script is intended to define all the container aliases required
@@ -269,6 +271,7 @@ __hps_list() {
 #   Print the configuration of the current setup
 ####################################################################################################
 __hps_config() {
+  echo "hps-env version: ${__hps_env_sh_version}"
   echo "uname: $(uname -a)"
   echo "OSTYPE: ${OSTYPE}"
   echo "Display Port: ${HPS_CONTAINER_DISPLAY}"
