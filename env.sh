@@ -563,6 +563,10 @@ HELP
 #   about them.
 ####################################################################################################
 hps() {
+  if [ -z $1 ]; then
+    __hps_help
+    return 0
+  fi
   # divide commands by outside/inside container and separate by number of arguments
   case $1 in
     # zero arguments
