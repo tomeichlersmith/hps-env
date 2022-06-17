@@ -71,8 +71,8 @@ jobs:
             _tag=pr-${{ github.event.number }}
           fi
           _push_tags="${DOCKER_REPO}:${_tag}"
-          if [[ $_tag =~ ^v[0-9]{1,3}\.[0-9]{1,3}$ ]]; then
-            # latest docker tag is latest version built matching the format v<1-3 digis>.<1-3 digis>
+          if [[ $_tag =~ ^v[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]]; then
+            # latest docker tag is latest version built matching the format v<1-3 digits>.<1-3 digits>.<1-3 digits>
             _push_tags="$_push_tags,${DOCKER_REPO}:latest"
           elif [ "${{ github.event_name }}" = "push" ]; then
             # on push actions, tag with sha of GITHUB as well
