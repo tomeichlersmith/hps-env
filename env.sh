@@ -427,6 +427,7 @@ HELP
 }
 export HPS_CONTAINER_INSTALL=""
 __hps_install() {
+  [ -d "$1" ] || mkdir -p "$1" || return $?
   export HPS_CONTAINER_INSTALL=$(cd "$1" && pwd -P)
   return 0
 }
