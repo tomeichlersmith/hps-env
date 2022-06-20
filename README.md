@@ -6,7 +6,7 @@ Containerized development environment for HPS software.
         <img src="https://img.shields.io/badge/License-GPLv3-blue.svg" />
     </a>
     <a href="https://github.com/tomeichlersmith/hps-env/actions" alt="Actions">
-        <img src="https://github.com/tomeichlersmith/hps-env/workflows/CI/badge.svg" />
+        <img src="https://github.com/tomeichlersmith/hps-env/actions/workflows/ci.yml/badge.svg" />
     </a>
     <a href="https://hub.docker.com/r/tomeichlersmith/hps-env" alt="DockerHub">
         <img src="https://img.shields.io/github/v/release/tomeichlersmith/hps-env" />
