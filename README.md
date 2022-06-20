@@ -17,7 +17,7 @@ Containerized development environment for HPS software.
 If you do not intend to develop the containerized environment itself
 and just wish to use it, all you need is the environment script.
 
-1. Retrieve environment script from the ![latest release](https://img.shields.io/github/v/release/tomeichlersmith/hps-env)
+1. Retrieve environment script from [latest release](https://github.com/tomeichlersmith/hps-env/releases)
 
 2. Setup environment
 ```bash
