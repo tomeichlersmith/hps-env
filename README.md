@@ -1,11 +1,23 @@
 # hps-env
 Containerized development environment for HPS software.
 
+<p align="center">
+    <a href="http://perso.crans.org/besson/LICENSE.html" alt="GPLv3 license">
+        <img src="https://img.shields.io/badge/License-GPLv3-blue.svg" />
+    </a>
+    <a href="https://github.com/tomeichlersmith/hps-env/actions" alt="Actions">
+        <img src="https://github.com/tomeichlersmith/hps-env/workflows/CI/badge.svg" />
+    </a>
+    <a href="https://hub.docker.com/r/tomeichlersmith/hps-env" alt="DockerHub">
+        <img src="https://img.shields.io/github/v/release/tomeichlersmith/hps-env" />
+    </a>
+</p>
+
 ## Quick Start
 If you do not intend to develop the containerized environment itself
 and just wish to use it, all you need is the environment script.
 
-1. Retrieve environment script from the [latest release](https://github.com/tomeichlersmith/hps-env/releases)
+1. Retrieve environment script from the ![latest release](https://img.shields.io/github/v/release/tomeichlersmith/hps-env)
 
 2. Setup environment
 ```bash
