@@ -105,6 +105,7 @@ RUN mkdir src &&\
      ${__untar} &&\
     cmake \
       -DCMAKE_BUILD_TYPE=Release \
+      -DCMAKE_CXX_STANDARD=17 \
       -DCMAKE_INSTALL_PREFIX=${__prefix} \
       -Dgminimal=ON \
       -Dgdml=ON \
