@@ -662,7 +662,7 @@ __hps_complete_directory() {
 ####################################################################################################
 __hps_complete_command() {
   # generate up-to-date list of options
-  local _options="$@ cmake make python root rootbrowse"
+  local _options="$@ cmake make python root rootbrowse java mvn"
   if [ ! -z ${HPS_CONTAINER_INSTALL} ]; then
     for exe in ${HPS_CONTAINER_INSTALL}/bin/*; do
       [ -x ${exe} ] || continue; # skip non-executable matches

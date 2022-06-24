@@ -82,6 +82,7 @@ RUN apt-get update &&\
 #   and then setting appropriate environment variables
 ###############################################################################
 LABEL java.version="15.1.0"
+LABEL mvn.version="3.8.6"
 ENV JAVA_HOME=/usr/local/java
 ENV MVN_HOME=/usr/local/mvn
 ENV PATH=${PATH}:${JAVA_HOME}/bin:${MVN_HOME}/bin
