@@ -5,12 +5,12 @@ MAINTAINER Tom Eichlersmith <eichl008@umn.edu>
 
 ###############################################################################
 # Source-Code Downloading Method
-#   mkdir src && ${__wget} <url-to-tar.gz-source-archive> | ${__untar}
+#   mkdir src && ${__wget} <url-to-tar.gz-source-archive> | ${__untar} src
 #
 #   Adapted from acts-project/machines
 ###############################################################################
 ENV __wget wget -q -O -
-ENV __untar tar -xz --strip-components=1 --directory src
+ENV __untar tar -xz --strip-components=1 --directory 
 ENV __prefix /usr/local
 
 # All init scripts in this directory will be run upon entry into container
@@ -77,9 +77,28 @@ RUN apt-get update &&\
     python3 -m pip install --upgrade --no-cache-dir cmake
 
 ###############################################################################
+# java and its build tool maeven
+#   both are just unpacking precompiled binaries for Linux into /usr/local
+#   and then setting appropriate environment variables
+###############################################################################
+LABEL java.version="15.1.0"
+ENV JAVA_HOME=/usr/local/java
+ENV MVN_HOME=/usr/local/mvn
+ENV PATH=${PATH}:${JAVA_HOME}/bin:${MVN_HOME}/bin
+RUN mkdir ${JAVA_HOME} ${MVN_HOME} &&\
+    ${__wget} https://download.java.net/java/GA/jdk15.0.1/51f4f36ad4ef43e39d0dfdbaf6549e32/9/GPL/openjdk-15.0.1_linux-x64_bin.tar.gz |\
+      ${__untar} ${JAVA_HOME} &&\
+    ${__wget} https://dlcdn.apache.org/maven/maven-3/3.8.6/binaries/apache-maven-3.8.6-bin.tar.gz |\
+      ${__untar} ${MVN_HOME}
+
+###############################################################################
 # LCIO
 ###############################################################################
 LABEL lcio.verision="hps-lcio:master"
+ENV LCIO_DIR=${__prefix}
+ENV LCIO_INCLUDE_DIRS=${LCIO_DIR}/include
+ENV IO_LCIO_LIBRARY=${LCIO_DIR}/lib/liblcio.so
+ENV LD_LIBRARY_PATH=${LCIO_DIR}/lib:${LD_LIBRARY_PATH}
 RUN mkdir src &&\
     git clone https://github.com/JeffersonLab/hps-lcio.git src &&\
     mkdir src/build &&\
@@ -88,11 +107,8 @@ RUN mkdir src &&\
       -DCMAKE_INSTALL_PREFIX=${__prefix} \
       .. &&\
     make install &&\
-    echo 'export LCIO_DIR=${__prefix}' >> ${__hep_env_script_d__}/lcio.sh &&\
-    echo 'export LCIO_INCLUDE_DIRS=$LCIO_DIR/include' >> ${__hep_env_script_d__}/lcio.sh &&\
-    echo 'export IO_LCIO_LIBRARY=$LCIO_DIR/lib/liblcio.so' >> ${__hep_env_script_d__}/lcio.sh &&\
-    echo 'export LD_LIBRARY_PATH=$LCIO_DIR/lib:$LD_LIBRARY_PATH' >> ${__hep_env_script_d__}/lcio.sh &&\
-    echo 'export PATH=$LCIO_DIR/bin:$PATH' >> ${__hep_env_script_d__}/lcio.sh &&\
+    cd /src/ &&\
+    mvn clean install -DskipTests -Dcheckstyle.skip &&\
     ldconfig ${__prefix}/lib &&\
     cd / && rm -rf src
 
@@ -102,7 +118,7 @@ RUN mkdir src &&\
 LABEL root.version="6.22.08"
 RUN mkdir src &&\
     ${__wget} https://root.cern/download/root_v6.22.08.source.tar.gz |\
-     ${__untar} &&\
+     ${__untar} src &&\
     cmake \
       -DCMAKE_BUILD_TYPE=Release \
       -DCMAKE_INSTALL_PREFIX=${__prefix} \
