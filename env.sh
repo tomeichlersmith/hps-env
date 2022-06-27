@@ -246,10 +246,9 @@ fi
 __hps_list_help() {
   cat<<\HELP
   USAGE:
-    hps list <docker-repo> [<glob>]
+    hps list <docker-repo>
 
     <docker-repo> is the repository of images you want to list the images of.
-    <glob> is an optional globbing pattern (as in grep) to filter the list of image tags.
 
     For systems using docker, containers built on the local system can be tagged and you 
     can search these tags using <docker-repo>=local.
@@ -257,17 +256,14 @@ __hps_list_help() {
   EXAMPLES:
     List all of the tags in the default repository
       hps list tomeichlersmith/hps-env
-    Only look at the tags that are root-based
-      hps list tomeichlersmith/hps-env root*
     Look at tags already on local system (docker systems only)
       hps list local
 HELP
 }
 __hps_list() {
   local _repo_name="$1"
-  local _glob="$2"
   if [ "${_repo_name}" == "local" ]; then
-    __hps_list_local ${_glob}
+    __hps_list_local
     return $?
   else
     #line-by-line description
@@ -281,7 +277,6 @@ __hps_list() {
         sed -e 's/[][]//g' -e 's/"//g' -e 's/ //g' |\
         tr '}' '\n'  |\
         awk -F: '{print $3}' |\
-        grep ${_glob:+*} |\
         tr '\n' ' '
     local rc=${PIPESTATUS[0]}
     echo "" #new line
