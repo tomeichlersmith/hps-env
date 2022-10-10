@@ -134,3 +134,40 @@ RUN mkdir src &&\
     && cmake --build build --target install &&\
     ln -s /usr/local/bin/thisroot.sh ${__hep_env_script_d__}/thisroot.sh &&\
     rm -rf build src
+
+###############################################################################
+# Eigen
+###############################################################################
+LABEL eigen.version=3.4.0
+RUN mkdir src &&\
+    ${__wget} https://gitlab.com/libeigen/eigen/-/archive/3.4.0/eigen-3.4.0.tar.gz |\
+      ${__untar} src &&\
+    cmake \
+        -DCMAKE_INSTALL_PREFIX=${__prefix} \
+        -B src/build \
+        -S src \
+    &&\
+    cmake \
+        --build src/build \
+        --target install \
+    &&\
+    rm -rf src 
+
+###############################################################################
+# GeneralBrokenLines
+###############################################################################
+LABEL gbl.version=2.2.0
+RUN mkdir src &&\
+    ${__wget} https://github.com/pbutti/GeneralBrokenLines/tarball/master |\
+      ${__untar} src &&\
+    cmake \
+      -DCMAKE_INSTALL_PREFIX=${__prefix} \
+      -B src/cpp/build \
+      -S src/cpp \
+    &&\
+    cmake \
+      --build src/cpp/build \
+      --target install \
+    &&\
+    rm -rf src
+
