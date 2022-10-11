@@ -506,6 +506,72 @@ __hps_source() {
 }
 
 ####################################################################################################
+# __hps_java
+#   Run 'java' inside the container with a set of pre-defined options already provided
+####################################################################################################
+__hps_java_help() {
+  cat<<\HELP
+  USAGE:
+    hps java [set|s] [add|a] [print|p] [java-options]
+
+    The [java-options] are the same as provided to `java`. If the `opts` keyword
+    is provided, instead of running `java`, the options provided are stored in the
+    `HPS_JAVA_OPTS` environment variable for later use.
+
+  OPTIONS:
+    set   : set the options to be provided to `java` as the arguments
+    add   : append the provided arguments to the list of options
+    print : show how `java` would be run in the container
+
+  EXAMPLES:
+    
+    We can use this machinery to persist common arguments into memory so they don't have
+    to be retyped.
+
+      hps java set -DdisableSvtAlignmentConstants -jar /full/path/to/my/jar -d my_detector
+      hps java steering.lcsim -n 10 -i input.slcio
+
+    is equivalent to
+
+      hps java -DdisableSvtAlignmentConstants -jar /full/path/to/my/jar -D my_detector \
+        steering.lcsim -n 10 -i input.slcio
+
+HELP
+}
+export HPS_JAVA_OPTS=()
+__hps_java() {
+  case $1 in
+    set|s)
+      export HPS_JAVA_OPTS=(${@:2})
+      return 0;
+      ;;
+    add|a)
+      HPS_JAVA_OPTS+=(${@:2})
+      export HPS_JAVA_OPTS
+      return 0;
+      ;;
+    print|p)
+      shift
+      echo java ${HPS_JAVA_OPTS[@]} $@
+      return 0;
+      ;;
+    *)
+      # everything else goes into container
+      # store current working directory
+      local _pwd=$(pwd -P)/.
+      # check if container will be able to see where we are
+      if ! __hps_is_mounted $_pwd; then
+        echo "You aren't in a directory mounted to the container!"
+        return 1
+      fi
+      # run the arguments in the current directory inside the container
+      __hps_run $_pwd java ${HPS_JAVA_OPTS[@]} $@
+      return $?
+      ;;
+  esac
+}
+
+####################################################################################################
 # __hps_help
 #   Print some helpful message to the terminal
 ####################################################################################################
@@ -529,6 +595,7 @@ __hps_help() {
     use     : Set image tag to use to run container
     mount   : Attach the input directory to the container when running
     install : Choose directory to install software compiled within container
+    java    : Set java options or simply run java within the container
     run     : Run a command at an input location in the container
     source  : Run the commands in the provided file through hps
 
@@ -583,6 +650,15 @@ hps() {
       fi
       # outside container
       __hps_$1 ${@:2}
+      return $?
+      ;;
+    # zero or more arguments
+    java)
+      if [[ "$2" == "help" ]]; then
+        __hps_${1}_help
+        return 0
+      fi
+      __hps_${1} ${@:2}
       return $?
       ;;
     # two or more arguments
@@ -706,7 +782,7 @@ __hps_complete() {
 
   if [[ "$COMP_CWORD" = "1" ]]; then
     # tab completing a main argument
-    __hps_complete_command "help list clean config cache use run mount install source"
+    __hps_complete_command "help list clean config cache use java run mount install source"
   elif [[ "$COMP_CWORD" = "2" ]]; then
     # tab complete a sub-argument,
     #   depends on the main argument
