@@ -160,6 +160,7 @@ LABEL gbl.version=2.2.0
 RUN mkdir src &&\
     ${__wget} https://github.com/pbutti/GeneralBrokenLines/tarball/master |\
       ${__untar} src &&\
+    echo "# removed on purpose" > src/cpp/cmake/ilcsoft_default_install_prefix.cmake &&\
     cmake \
       -DCMAKE_INSTALL_PREFIX=${__prefix} \
       -B src/cpp/build \
