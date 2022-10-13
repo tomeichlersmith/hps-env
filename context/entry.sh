@@ -33,6 +33,9 @@ if compgen -G "${__hep_env_script_d__}/*" &> /dev/null; then
   unset init_script
 fi
 
+# make sure maven uses the container settings
+alias mvn='mvn --global-settings /etc/mvn_settings.xml'
+
 # helps simplify any cmake nonsense
 export CMAKE_PREFIX_PATH=/usr/local/${CMAKE_PREFIX_PATH:+:${CMAKE_PREFIX_PATH}}
 

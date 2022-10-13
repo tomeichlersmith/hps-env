@@ -1,0 +1,8 @@
+<settings>
+  <!--
+    The container install directory is mounted to /externals
+    within the container, so we instruct Maven to have its
+    repository/cache there
+  -->
+  <localRepository>/externals/.m2/repository/</localRepository>
+</settings>
