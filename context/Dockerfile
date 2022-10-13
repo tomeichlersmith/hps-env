@@ -36,10 +36,12 @@ RUN apt-get update &&\
     apt-get install -y \
         binutils \
         ca-certificates \
+        default-jre \
         fonts-freefont-ttf \
         g++-7 \
         gcc-7 \
         git \
+        libafterimage-dev \
         libfftw3-dev \
         libfreetype6-dev \
         libftgl-dev \
@@ -85,7 +87,7 @@ LABEL java.version="15.1.0"
 LABEL mvn.version="3.8.6"
 ENV JAVA_HOME=/usr/local/java
 ENV MVN_HOME=/usr/local/mvn
-ENV PATH=${PATH}:${JAVA_HOME}/bin:${MVN_HOME}/bin
+ENV PATH=${JAVA_HOME}/bin:${MVN_HOME}/bin:${PATH}
 RUN mkdir ${JAVA_HOME} ${MVN_HOME} &&\
     ${__wget} https://download.java.net/java/GA/jdk15.0.1/51f4f36ad4ef43e39d0dfdbaf6549e32/9/GPL/openjdk-15.0.1_linux-x64_bin.tar.gz |\
       ${__untar} ${JAVA_HOME} &&\
