@@ -175,3 +175,80 @@ RUN mkdir src &&\
     &&\
     rm -rf src
 
+################################################################################
+# Xerces-C 
+################################################################################
+LABEL xercesc.version="3.2.3"
+RUN mkdir src &&\
+    ${__wget} http://archive.apache.org/dist/xerces/c/3/sources/xerces-c-3.2.3.tar.gz |\
+      ${__untar} src &&\
+    cmake -B src/build -S src -DCMAKE_INSTALL_PREFIX=${__prefix} &&\
+    cmake --build src/build --target install &&\
+    rm -rf src
+
+###############################################################################
+# Geant4
+#
+# Assumptions
+#  - GEANT4 defined to be a release of geant4 or LDMX's fork of geant4
+###############################################################################
+ENV GEANT4=v10.7.4
+LABEL geant4.version="${GEANT4}"
+RUN mkdir src &&\
+    ${__wget} https://github.com/geant4/geant4/archive/${GEANT4}.tar.gz |\
+      ${__untar} src &&\
+    cmake \
+        -DGEANT4_INSTALL_DATA=ON \
+        -DGEANT4_USE_GDML=ON \
+        -DGEANT4_INSTALL_EXAMPLES=OFF \
+        -DGEANT4_USE_OPENGL_X11=ON \
+        -DCMAKE_INSTALL_PREFIX=${__prefix} \
+        -B src/build \
+        -S src \
+        &&\
+    cmake --build src/build --target install &&\
+    ln -s /usr/local/bin/geant4.sh ${__hep_env_script_d__}/geant4.sh &&\ 
+    rm -rf src 
+
+###############################################################################
+# HepPDT
+###############################################################################
+LABEL heppdt.version="3.04.01"
+RUN git clone https://github.com/slaclab/heppdt src &&\
+    cd src &&\
+    ./configure \
+      --prefix=${__prefix} \
+      --disable-static \
+    && make install &&\
+    cd / && rm -rf src
+
+###############################################################################
+# GDML
+###############################################################################
+LABEL gdml.version="3.1.2"
+RUN git clone https://github.com/slaclab/gdml src &&\
+    cmake \
+      -DCMAKE_INSTALL_PREFIX=${__prefix} \
+      -B src/build \
+      -S src \
+    &&\
+    cmake \
+      --build src/build \
+      --target install \
+    && rm -rf src
+
+###############################################################################
+# LCDD
+###############################################################################
+LABEL lcdd.version="5.0.0"
+RUN git clone https://github.com/slaclab/lcdd src &&\
+    cmake \
+      -DCMAKE_INSTALL_PREFIX=${__prefix} \
+      -B src/build \
+      -S src \
+    &&\
+    cmake \
+      --build src/build \
+      --target install \
+    && rm -rf src
+
