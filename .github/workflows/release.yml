@@ -14,7 +14,7 @@ jobs:
     steps:
     - 
       name: Get env Script
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
     -
       name: Write env Version into Script
       run: sed -i "6i export HPS_ENV_VERSION=$(git describe --tags)" env.sh
