@@ -227,7 +227,7 @@ elif hash singularity &> /dev/null; then
 
   __hps_cache() {
     if [[ -d "$1" ]]; then
-      export SINGULARITY_CACHEDIR="$1"
+      export SINGULARITY_CACHEDIR="$(cd $1 && pwd -P)"
       return 0
     else
       echo "ERROR: '$1' is not a directory."
