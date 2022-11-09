@@ -98,7 +98,7 @@ if [ -z ${HPS_ENV_VERSION+x} ]; then
     # we have git so we can (hopefully) deduce version from where env script is
     if [ -d ${HPS_ENV_SCRIPT_DIR}/.git ]; then
       # git dir exists in script dir, lets deduce it
-      export HPS_ENV_VERSION=$(git -C ${HPS_ENV_SCRIPT_DIR} describe --tags)
+      export HPS_ENV_VERSION=$(cd ${HPS_ENV_SCRIPT_DIR} && git describe --tags)
     fi
   fi
 fi
