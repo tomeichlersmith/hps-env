@@ -98,14 +98,13 @@ RUN mkdir ${JAVA_HOME} ${MVN_HOME} &&\
 ###############################################################################
 # LCIO
 ###############################################################################
-LABEL lcio.verision="v02-17-01"
+LABEL lcio.verision="hps-lcio:master"
 ENV LCIO_DIR=${__prefix}
 ENV LCIO_INCLUDE_DIRS=${LCIO_DIR}/include
 ENV IO_LCIO_LIBRARY=${LCIO_DIR}/lib/liblcio.so
 ENV LD_LIBRARY_PATH=${LCIO_DIR}/lib:${LD_LIBRARY_PATH}
 RUN mkdir src &&\
-    ${__wget} https://github.com/iLCSoft/LCIO/archive/refs/tags/v02-17-01.tar.gz |\
-        ${__untar} src &&\
+    git clone https://github.com/JeffersonLab/hps-lcio.git src &&\
     mkdir src/build &&\
     cd src/build &&\
     cmake \
