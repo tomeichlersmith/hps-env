@@ -251,14 +251,25 @@ under the License.
       </properties>
     </profile>
     -->
+
+    <!--
+     | This profile sets the cache directory to the correct location within the container.
+     | Since we are packaging mvn in the container, this profile should be in the always
+     | active section below.
+    -->
+    <profile>
+      <id>set-lcsim-cache-dir</id>
+      <properties>
+        <org.lcsim.cacheDir>/externals</org.lcsim.cacheDir>
+      </properties>
+    </profile>
   </profiles>
 
   <!-- activeProfiles
    | List of profiles that are active for all builds.
    |
-  <activeProfiles>
-    <activeProfile>alwaysActiveProfile</activeProfile>
-    <activeProfile>anotherAlwaysActiveProfile</activeProfile>
-  </activeProfiles>
   -->
+  <activeProfiles>
+    <activeProfile>set-lcsim-cache-dir</activeProfile>
+  </activeProfiles>
 </settings>
