@@ -40,6 +40,7 @@ RUN apt-get update &&\
         fonts-freefont-ttf \
         g++-7 \
         gcc-7 \
+        gfortran \
         git \
         libafterimage-dev \
         libfftw3-dev \
