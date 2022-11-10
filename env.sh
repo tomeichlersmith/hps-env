@@ -177,6 +177,10 @@ if hash docker &> /dev/null; then
 
   # Run the container
   __hps_run() {
+    if [[ ${HPS_IMAGE_TAG} = *".sif" ]]; then
+      echo "ERROR: Attempting to run a SIF file with docker"
+      return 1
+    fi
     local _mounts=""
     for dir_to_mount in "${HPS_CONTAINER_MOUNTS[@]}"; do
       _mounts="$_mounts -v $dir_to_mount:$dir_to_mount"
@@ -202,10 +206,19 @@ elif hash singularity &> /dev/null; then
     return 1
   }
 
+  # get the image argument depending on its format
+  __hps_image_arg() {
+    if [[ ${HPS_IMAGE_TAG} = *".sif" ]]; then
+      echo ${HPS_IMAGE_TAG}
+    else 
+      echo docker://${HPS_IMAGE_TAG}
+    fi
+  }
+
   # Print container configuration
   __hps_container_config() {
     echo "Singularity Version: $(singularity --version)"
-    echo "Singularity Tag: docker://${HPS_IMAGE_TAG}"
+    echo "Singularity Tag: $(__hps_image_arg)"
     return 0
   }
 
@@ -221,7 +234,7 @@ elif hash singularity &> /dev/null; then
       csv_list="$csv_list,$dir_to_mount"
     done
     singularity run --no-home --cleanenv \
-      --bind ${csv_list} docker://${HPS_IMAGE_TAG} "$@"
+      --bind ${csv_list} $(__hps_image_arg) "$@"
     return $?
   }
 
@@ -338,6 +351,9 @@ __hps_use() {
   if [[ ${_tag} = *":"* ]]; then
     # full docker image tag was given
     export HPS_IMAGE_TAG=${_tag}
+  elif [[ ${_tag} = *".sif" ]]; then
+    # using a SIF file
+    export HPS_IMAGE_TAG=$(realpath ${_tag})
   else
     # only short-tag, keep repo from before
     export HPS_IMAGE_TAG="${HPS_IMAGE_TAG%:*}:${_tag}"
