@@ -252,3 +252,15 @@ RUN git clone https://github.com/slaclab/lcdd src &&\
       --target install \
     && rm -rf src
 
+###############################################################################
+# MillepedeII
+#   Used for tracker alignment
+#   No publicly availabe repository so we have to carry around the tarball here
+###############################################################################
+LABEL millepedeII.version="unknown"
+ADD ./MillepedeII.tar.gz /src/
+RUN cd /src/MillepedeII/ &&\
+    sed -i 's|^PREFIX =.*$|PREFIX = /usr/local|' Makefile &&\
+    make install &&\
+    cd / && rm -rf src
+
