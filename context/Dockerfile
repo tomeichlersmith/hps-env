@@ -265,3 +265,16 @@ RUN cd /src/MillepedeII/ &&\
     make install &&\
     cd / && rm -rf src
 
+###############################################################################
+# Extra Python packages
+###############################################################################
+ENV PYTHONPATH /usr/local/lib
+ENV CLING_STANDARD_PCH none
+RUN python3 -m pip install --upgrade --no-cache-dir \
+        Cython \
+        uproot \
+        numpy \
+        matplotlib \
+        mplhep \
+        pandas \
+        "typer[all]"
