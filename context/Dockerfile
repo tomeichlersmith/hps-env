@@ -139,7 +139,6 @@ RUN mkdir src &&\
     rm -rf build src
 ENV ROOTSYS=${__prefix}
 ENV PYTHONPATH=${ROOTSYS}/lib/root:${PYTHONPATH}
-ENV CMAKE_PREFIX_PATH=${__prefix}
 ENV JUPYTER_PATH=${ROOTSYS}/etc/notebook:${JUPYTER_PATH}
 ENV JUPYTER_CONFIG_DIR=${ROOTSYS}/etc/notebook:${JUPYTER_CONFIG_DIR}
 ENV CLING_STANDARD_PCH=none
@@ -294,7 +293,6 @@ RUN ldconfig -v
 ###############################################################################
 # Extra Python packages
 ###############################################################################
-ENV PYTHONPATH /usr/local/lib
 RUN python3 -m pip install --upgrade --no-cache-dir \
         Cython \
         uproot \
