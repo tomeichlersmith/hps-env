@@ -21,9 +21,9 @@ ENV PYTHONPATH="${EXTERNAL_INSTALL_DIR}/lib:${EXTERNAL_INSTALL_DIR}/python:${EXT
 ENV CMAKE_PREFIX_PATH="${EXTERNAL_INSTALL_DIR}:${__prefix}" 
 
 #run environment setup when docker container is launched and decide what to do from there
-COPY ./entry.sh /etc/
-RUN chmod 755 /etc/entry.sh
-ENTRYPOINT ["/etc/entry.sh"]
+#COPY ./entry.sh /etc/
+#RUN chmod 755 /etc/entry.sh
+#ENTRYPOINT ["/etc/entry.sh"]
 
 # First install any required dependencies from ubuntu repos
 # Ongoing documentation for this list is in docs/ubuntu-packages.md
