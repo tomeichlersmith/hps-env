@@ -13,16 +13,12 @@ ENV __wget wget -q -O -
 ENV __untar tar -xz --strip-components=1 --directory 
 ENV __prefix /usr/local
 
-# All init scripts in this directory will be run upon entry into container
-ENV __hep_env_script_d__ /etc/hep-container-end.d
-RUN mkdir ${__hep_env_script_d__}
-
 # this directory is where folks should "install" code compiled with the container
 ENV EXTERNAL_INSTALL_DIR /externals
 ENV PATH="${EXTERNAL_INSTALL_DIR}/bin:${PATH}"
 ENV LD_LIBRARY_PATH="${EXTERNAL_INSTALL_DIR}/lib"
 ENV PYTHONPATH="${EXTERNAL_INSTALL_DIR}/lib:${EXTERNAL_INSTALL_DIR}/python:${EXTERNAL_INSTALL_DIR}/lib/python"
-ENV CMAKE_PREFIX_PATH="${EXTERNAL_INSTALL_DIR}" 
+ENV CMAKE_PREFIX_PATH="${EXTERNAL_INSTALL_DIR}:${__prefix}" 
 
 #run environment setup when docker container is launched and decide what to do from there
 COPY ./entry.sh /etc/
@@ -114,11 +110,14 @@ RUN mkdir src &&\
     make install &&\
     cd /src/ &&\
     mvn clean install -DskipTests -Dcheckstyle.skip &&\
-    ldconfig ${__prefix}/lib &&\
     cd / && rm -rf src
 
 ###############################################################################
 # CERN's ROOT
+#   The ENV variables needed downstream for ROOT running and dedection were
+#   manually extracted from the thisroot.sh script.
+#   Since we are installing to /usr/local/{bin,lib,...} we can avoid some
+#   of the paths: PATH, LD_LIBRARY_PATH (running ldconfig later)
 ###############################################################################
 LABEL root.version="6.22.08"
 RUN mkdir src &&\
@@ -136,8 +135,14 @@ RUN mkdir src &&\
       -B build \
       -S src \
     && cmake --build build --target install &&\
-    ln -s /usr/local/bin/thisroot.sh ${__hep_env_script_d__}/thisroot.sh &&\
+    echo "/usr/local/lib/root" > /etc/ld.so.conf.d/cern-root.conf &&\
     rm -rf build src
+ENV ROOTSYS=${__prefix}
+ENV PYTHONPATH=${ROOTSYS}/lib/root:${PYTHONPATH}
+ENV CMAKE_PREFIX_PATH=${__prefix}
+ENV JUPYTER_PATH=${ROOTSYS}/etc/notebook:${JUPYTER_PATH}
+ENV JUPYTER_CONFIG_DIR=${ROOTSYS}/etc/notebook:${JUPYTER_CONFIG_DIR}
+ENV CLING_STANDARD_PCH=none
 
 ###############################################################################
 # Eigen
@@ -190,8 +195,9 @@ RUN mkdir src &&\
 ###############################################################################
 # Geant4
 #
-# Assumptions
-#  - GEANT4 defined to be a release of geant4 or LDMX's fork of geant4
+#   The normal ENV variables can be ommitted since we are installing to
+#   a system path. We just need to copy the environment variables defining
+#   the location of datasets.
 ###############################################################################
 ENV GEANT4=v10.7.4
 LABEL geant4.version="${GEANT4}"
@@ -208,8 +214,18 @@ RUN mkdir src &&\
         -S src \
         &&\
     cmake --build src/build --target install &&\
-    ln -s /usr/local/bin/geant4.sh ${__hep_env_script_d__}/geant4.sh &&\ 
     rm -rf src 
+ENV G4NEUTRONHPDATA="${__prefix}/share/Geant4-10.7.4/data/G4NDL4.6"
+ENV G4LEDATA="${__prefix}/share/Geant4-10.7.4/data/G4EMLOW7.13"
+ENV G4LEVELGAMMADATA="${__prefix}/share/Geant4-10.7.4/data/PhotonEvaporation5.7"
+ENV G4RADIOACTIVEDATA="${__prefix}/share/Geant4-10.7.4/data/RadioactiveDecay5.6"
+ENV G4PARTICLEXSDATA="${__prefix}/share/Geant4-10.7.4/data/G4PARTICLEXS3.1.1"
+ENV G4PIIDATA="${__prefix}/share/Geant4-10.7.4/data/G4PII1.3"
+ENV G4REALSURFACEDATA="${__prefix}/share/Geant4-10.7.4/data/RealSurface2.2"
+ENV G4SAIDXSDATA="${__prefix}/share/Geant4-10.7.4/data/G4SAIDDATA2.0"
+ENV G4ABLADATA="${__prefix}/share/Geant4-10.7.4/data/G4ABLA3.1"
+ENV G4INCLDATA="${__prefix}/share/Geant4-10.7.4/data/G4INCL1.0"
+ENV G4ENSDFSTATEDATA="${__prefix}/share/Geant4-10.7.4/data/G4ENSDFSTATE2.3"
 
 ###############################################################################
 # HepPDT
@@ -266,10 +282,19 @@ RUN cd /src/MillepedeII/ &&\
     cd / && rm -rf src
 
 ###############################################################################
+# Generate the linker cache
+#    This should go AFTER all compiled dependencies so that the ld cache 
+#    contains all of them.
+#    Ubuntu includes /usr/local/lib in the linker cache generation by default,
+#    so dependencies just need to write a ld conf file if their libs do not
+#    get installed to that directory (e.g. ROOT)
+###############################################################################
+RUN ldconfig -v
+
+###############################################################################
 # Extra Python packages
 ###############################################################################
 ENV PYTHONPATH /usr/local/lib
-ENV CLING_STANDARD_PCH none
 RUN python3 -m pip install --upgrade --no-cache-dir \
         Cython \
         uproot \

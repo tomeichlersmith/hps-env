@@ -23,19 +23,6 @@ set -e
 #     installed in the container image.
 ###############################################################################
 
-# Set-up computing environment
-#   after checking if there are any set-up scripts to run,
-#   we loop through the setup scripts and source the realpath to them
-if compgen -G "${__hep_env_script_d__}/*" &> /dev/null; then
-  for init_script in ${__hep_env_script_d__}/*; do
-    . $(realpath ${init_script})
-  done
-  unset init_script
-fi
-
-# helps simplify any cmake nonsense
-export CMAKE_PREFIX_PATH=/usr/local/${CMAKE_PREFIX_PATH:+:${CMAKE_PREFIX_PATH}}
-
 # go to first argument
 cd "$1"
 
