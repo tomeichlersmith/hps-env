@@ -127,6 +127,7 @@ RUN mkdir src &&\
       -DCMAKE_BUILD_TYPE=Release \
       -DCMAKE_INSTALL_PREFIX=${__prefix} \
       -Dgminimal=ON \
+      -Dasimage=ON \
       -Dgdml=ON \
       -Dopengl=ON \
       -Dpyroot=ON \
