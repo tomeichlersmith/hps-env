@@ -30,14 +30,23 @@ ENV CMAKE_PREFIX_PATH="${EXTERNAL_INSTALL_DIR}:${__prefix}"
 RUN apt-get update &&\
     DEBIAN_FRONTEND=noninteractive \
     apt-get install -y \
+        apt-utils \
+        bc \
         binutils \
         ca-certificates \
+        cmake \
+        curl \
+        dialog \
+        diffutils \
+        findutils \
         default-jre \
         fonts-freefont-ttf \
-        g++-7 \
-        gcc-7 \
+        g++ \
+        gcc \
         gfortran \
+        gnupg2 \
         git \
+        less \
         libafterimage-dev \
         libfftw3-dev \
         libfreetype6-dev \
@@ -50,6 +59,7 @@ RUN apt-get update &&\
         libjpeg-dev \
         liblz4-dev \
         liblzma-dev \
+        libnss-myhostname \
         libpcre++-dev \
         libpng-dev \
         libssl-dev \
@@ -61,19 +71,26 @@ RUN apt-get update &&\
         libxpm-dev \
         libz-dev \
         libzstd-dev \
+        lsof \
         locales \
         make \
+        ncurses-base \
+        passwd \
+        pinentry-curses \
+        procps \
         python3-dev \
         python3-pip \
         python3-numpy \
         python3-tk \
         python-is-python3 \
         srm-ifce-dev \
+        sudo \
+        time \
+        util-linux \
         wget \
     && rm -rf /var/lib/apt/lists/* &&\
     apt-get autoremove --purge &&\
-    apt-get clean all &&\
-    python3 -m pip install --upgrade --no-cache-dir cmake
+    apt-get clean all
 
 ###############################################################################
 # java and its build tool maeven
