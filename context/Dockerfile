@@ -13,18 +13,6 @@ ENV __wget wget -q -O -
 ENV __untar tar -xz --strip-components=1 --directory 
 ENV __prefix /usr/local
 
-# this directory is where folks should "install" code compiled with the container
-ENV EXTERNAL_INSTALL_DIR /externals
-ENV PATH="${EXTERNAL_INSTALL_DIR}/bin:${PATH}"
-ENV LD_LIBRARY_PATH="${EXTERNAL_INSTALL_DIR}/lib"
-ENV PYTHONPATH="${EXTERNAL_INSTALL_DIR}/lib:${EXTERNAL_INSTALL_DIR}/python:${EXTERNAL_INSTALL_DIR}/lib/python"
-ENV CMAKE_PREFIX_PATH="${EXTERNAL_INSTALL_DIR}:${__prefix}" 
-
-#run environment setup when docker container is launched and decide what to do from there
-#COPY ./entry.sh /etc/
-#RUN chmod 755 /etc/entry.sh
-#ENTRYPOINT ["/etc/entry.sh"]
-
 # First install any required dependencies from ubuntu repos
 # Ongoing documentation for this list is in docs/ubuntu-packages.md
 RUN apt-get update &&\
@@ -107,7 +95,6 @@ RUN mkdir ${JAVA_HOME} ${MVN_HOME} &&\
       ${__untar} ${JAVA_HOME} &&\
     ${__wget} https://dlcdn.apache.org/maven/maven-3/3.8.6/binaries/apache-maven-3.8.6-bin.tar.gz |\
       ${__untar} ${MVN_HOME}
-COPY ./mvn_settings.xml /usr/local/mvn/conf/settings.xml
 
 ###############################################################################
 # LCIO
