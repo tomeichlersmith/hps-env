@@ -13,9 +13,37 @@ Containerized development environment for HPS software.
     </a>
 </p>
 
+### Note
+We are transitioning to a more integrated design for the environment container
+based on [distrobox](https://github.com/89luca89/distrobox). If you are using `docker`
+or `podman` on your computer, install distrobox and use a container after v0.11.0.
+
+The environment script is lagging behind and may not support the latest container.
+
 ## Quick Start
 If you do not intend to develop the containerized environment itself
-and just wish to use it, all you need is the environment script.
+and just wish to use it, all you need is the environment script (or distrobox).
+
+### distrobox
+Create a distrobox using the image built from this repo on DockerHub.
+```
+distrobox create -i tomeichlersmith/hps-env:edge -n hps-env -H /full/path/to/hps
+```
+Here I changed the home directory of the distrobox to be the place where all
+your HPS junk is. This is to avoid cluttering your real home directory with whatever
+settings/caches/configs are written/read by things inside the box.
+
+Then you can enter the environment.
+```
+distrobox enter hps-env
+```
+Now you are in a terminal inside the box with all the HPS dependencies installed.
+It is Ubuntu 20.04 and is connected to your screen for graphical apps.
+You have password-less `sudo` access to install anything else into the box you may
+want. Changes to the box will not be persisted if the box is ever "stopped" but
+generally the only time boxes are stopped are when a computer is rebooted.
+
+### env.sh
 
 1. Retrieve environment script from [latest release](https://github.com/tomeichlersmith/hps-env/releases)
 
