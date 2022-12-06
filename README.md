@@ -16,15 +16,15 @@ Containerized development environment for HPS software.
 ### Note
 We are transitioning to a more integrated design for the environment container
 based on [distrobox](https://github.com/89luca89/distrobox). If you are using `docker`
-or `podman` on your computer, install distrobox and use a container after v0.11.0.
+or `podman` on your computer, install distrobox and use a container _after_ v0.11.0.
 
 The environment script is lagging behind and may not support the latest container.
 
 ## Quick Start
 If you do not intend to develop the containerized environment itself
-and just wish to use it, all you need is the environment script (or distrobox).
+and just wish to use it, all you need is a container runner (and distrobox).
 
-### distrobox
+### docker and distrobox
 Create a distrobox using the image built from this repo on DockerHub.
 ```
 distrobox create -i tomeichlersmith/hps-env:edge -n hps-env -H /full/path/to/hps
@@ -43,31 +43,15 @@ You have password-less `sudo` access to install anything else into the box you m
 want. Changes to the box will not be persisted if the box is ever "stopped" but
 generally the only time boxes are stopped are when a computer is rebooted.
 
-### env.sh
+### singularity and apptainer
+There is ongoing work to include support for more container runtimes in distrobox
+([Issue #511](https://github.com/89luca89/distrobox/issues/511)), so until that is 
+completed the best option is using the `shell` subcommand.
 
-1. Retrieve environment script from [latest release](https://github.com/tomeichlersmith/hps-env/releases)
-
-2. Setup environment
-```bash
-source env.sh
-hps mount /path/to/sw/parent/dir/
-hps install /some/dir/to/install/sw/
-hps use latest
+```
+apptainer build hps-env-tag.sif docker://tomeichlersmith/hps-env:tag
+apptainer shell -H /full/path/to/hps hps-env-tag.sif
 ```
 
-3. (optional) Solidify Setup
-The last three commands in step (2) can be tedious, so you can provide a "RC" file
-to the environment script to use. First write the environment configuration you
-want to use.
-```
-# file: hpsrc
-mount /path/to/dir/to/mount
-install /path/to/install/sw
-use latest
-```
-Then call the environment script with this file.
-```bash
-source env.sh hpsrc
-```
-The environment script also checks at `~/.hpsrc` and `${HPSRC}` if you want to use
-those other options instead.
+This shell isn't as pretty as well integrated with the host as the one produced by distrobox;
+however, it is still functional.
