@@ -16,9 +16,9 @@ Containerized development environment for HPS software.
 ### Note
 We are transitioning to a more integrated design for the environment container
 based on [distrobox](https://github.com/89luca89/distrobox). If you are using `docker`
-or `podman` on your computer, install distrobox and use a container _after_ v0.11.0.
+or `podman` on your computer, install distrobox and use a container _after_ v1.
 
-The environment script is lagging behind and may not support the latest container.
+The environment script is fully deprecated and can only be used by containers v0.10.0 or earlier.
 
 ## Quick Start
 If you do not intend to develop the containerized environment itself
@@ -50,7 +50,11 @@ completed the best option is using the `shell` subcommand.
 
 ```
 apptainer build hps-env-tag.sif docker://tomeichlersmith/hps-env:tag
-apptainer shell -H /full/path/to/hps hps-env-tag.sif
+apptainer shell --env "PS1=${PS1}" \
+  --env "LS_COLORS=${LS_COLORS}" \
+  --hostname hps-env.$(uname -n) \
+  -H /full/path/to/hps \
+  hps-env-tag.sif
 ```
 
 This shell isn't as pretty as well integrated with the host as the one produced by distrobox;
