@@ -58,4 +58,7 @@ apptainer shell --env "PS1=${PS1}" \
 ```
 
 This shell isn't as pretty as well integrated with the host as the one produced by distrobox;
-however, it is still functional.
+however, it is still functional. (Note: `apptainer` is the new name for `singularity` and has
+the same CLI - if your system only has the older version named `singularity` simply use the same
+subcommands but with `singularity`).
+
