@@ -305,5 +305,4 @@ RUN python3 -m pip install --upgrade --no-cache-dir \
         matplotlib \
         mplhep \
         pandas \
-        six \
         "typer[all]"
