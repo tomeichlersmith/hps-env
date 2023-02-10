@@ -22,7 +22,6 @@ RUN apt-get update &&\
         bc \
         binutils \
         ca-certificates \
-        cmake \
         curl \
         dialog \
         diffutils \
@@ -78,7 +77,9 @@ RUN apt-get update &&\
         wget \
     && rm -rf /var/lib/apt/lists/* &&\
     apt-get autoremove --purge &&\
-    apt-get clean all
+    apt-get clean all &&\
+    python3 -m pip install --no-cache-dir \
+        cmake==3.25 \
 
 ###############################################################################
 # java and its build tool maeven
