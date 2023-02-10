@@ -43,6 +43,7 @@ RUN apt-get update &&\
         libgl2ps-dev \
         libglew-dev \
         libglu-dev \
+        libgsl-dev \
         libjpeg-dev \
         liblz4-dev \
         liblzma-dev \
