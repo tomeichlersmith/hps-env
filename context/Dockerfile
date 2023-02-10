@@ -86,14 +86,14 @@ RUN apt-get update &&\
 #   and then setting appropriate environment variables
 ###############################################################################
 LABEL java.version="15.1.0"
-LABEL mvn.version="3.8.6"
+LABEL mvn.version="3.9.0"
 ENV JAVA_HOME=/usr/local/java
 ENV MVN_HOME=/usr/local/mvn
 ENV PATH=${JAVA_HOME}/bin:${MVN_HOME}/bin:${PATH}
 RUN mkdir ${JAVA_HOME} ${MVN_HOME} &&\
     ${__wget} https://download.java.net/java/GA/jdk15.0.1/51f4f36ad4ef43e39d0dfdbaf6549e32/9/GPL/openjdk-15.0.1_linux-x64_bin.tar.gz |\
       ${__untar} ${JAVA_HOME} &&\
-    ${__wget} https://dlcdn.apache.org/maven/maven-3/3.8.6/binaries/apache-maven-3.8.6-bin.tar.gz |\
+    ${__wget} https://dlcdn.apache.org/maven/maven-3/3.9.0/binaries/apache-maven-3.9.0-bin.tar.gz |\
       ${__untar} ${MVN_HOME}
 
 ###############################################################################
