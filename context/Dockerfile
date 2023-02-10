@@ -80,7 +80,7 @@ RUN apt-get update &&\
     apt-get autoremove --purge &&\
     apt-get clean all &&\
     python3 -m pip install --no-cache-dir \
-        cmake==3.25 \
+        cmake==3.25
 
 ###############################################################################
 # java and its build tool maeven
