@@ -24,10 +24,15 @@ The environment script is fully deprecated and can only be used by containers v0
 If you do not intend to develop the containerized environment itself
 and just wish to use it, all you need is a container runner (and distrobox).
 
-### docker and distrobox
+Below, I use the tag `v1.0.0` of the container as an example. This tag can
+be replaced by any version of the image that is later than v1.
+
+### docker or podman and distrobox
 Create a distrobox using the image built from this repo on DockerHub.
 ```
-distrobox create -i tomeichlersmith/hps-env:edge -n hps-env -H /full/path/to/hps
+distrobox create --image tomeichlersmith/hps-env:v1.0.0 \
+  --name hps-env \
+  --home /full/path/to/hps
 ```
 Here I changed the home directory of the distrobox to be the place where all
 your HPS junk is. This is to avoid cluttering your real home directory with whatever
@@ -48,17 +53,27 @@ There is ongoing work to include support for more container runtimes in distrobo
 ([Issue #511](https://github.com/89luca89/distrobox/issues/511)), so until that is 
 completed the best option is using the `shell` subcommand.
 
+Similar to above, it is a two-step procedure. First, we need to download the
+image holding all of the HPS software dependencies.
 ```
-apptainer build hps-env-tag.sif docker://tomeichlersmith/hps-env:tag
+apptainer build hps-env-v1.0.0.sif docker://tomeichlersmith/hps-env:v1.0.0
+```
+
+Second, we enter the environment by opening a shell with apptainer.
+```
 apptainer shell --env "PS1=${PS1}" \
   --env "LS_COLORS=${LS_COLORS}" \
   --hostname hps-env.$(uname -n) \
-  -H /full/path/to/hps \
-  hps-env-tag.sif
+  --home /full/path/to/hps \
+  hps-env-v1.0.0.sif
 ```
 
-This shell isn't as pretty as well integrated with the host as the one produced by distrobox;
+This shell isn't as pretty or as well integrated with the host as the one produced by distrobox;
 however, it is still functional. (Note: `apptainer` is the new name for `singularity` and has
 the same CLI - if your system only has the older version named `singularity` simply use the same
 subcommands but with `singularity`).
 
+Unlike the docker-hosted container above, this one isn't writable, so you will not be able to
+installl anything else into the box. This means you will probably want two side-by-side terminals:
+one inside the box for compiling and running the software and one outside the box for using other
+tools that aren't in the container (like a text editor).
