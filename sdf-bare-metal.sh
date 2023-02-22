@@ -32,7 +32,18 @@ if [ -z $ROOTSYS ]; then
 fi
 
 if [ -z $HPSTR_BASE ]; then
-  source ${HPS_HOME}/hpstr/install/bin/setup.sh
+  if [ -d ${HPS_HOME}/hpstr/install/bin ]; then
+    # there is a hpstr install
+    if [ -f ${HPS_HOME}/hpstr/install/bin/setup.sh ]; then
+      # older branch with legacy env script
+      source ${HPS_HOME}/hpstr/install/bin/setup.sh
+    elif [ -f ${HPS_HOME}/hpstr/install/bin/hpstr-env.sh ]; then
+      # newer branch
+      source ${HPS_HOME}/hpstr/install/bin/hpstr-env.sh
+    else
+      echo "ERROR: Can't deduce hpstr env script location."
+    fi
+  fi
 fi
 
 #Alias to make things easier
