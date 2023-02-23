@@ -26,49 +26,53 @@ RUN yum install -y \
       bash \
       binutils \
       zsh \
-			bc \
-			curl \
+      bc \
+      curl \
       dialog \
-			diffutils \
+      diffutils \
       fftw-devel \
-			findutils \
+      findutils \
       ftgl-devel \
       gcc \
       gcc-c++ \
       gcc-gfortran \
       git \
       glew-devel \
-			gnupg2 \
+      gnupg2 \
       graphviz-devel \
       gsl-devel \
-			less \
+      less \
       libuuid-devel \
       libX11-devel \
       libXext-devel \
       libXft-devel \
       libxml2-devel \
       libXpm-devel \
-			lsof \
+      lsof \
       make \
       mesa-libGL-devel \
       mesa-libGLU-devel \
-			ncurses \
+      ncurses \
       openldap-devel \
       openssl-devel \
-			passwd \
+      passwd \
       pcre-devel \
-			pinentry \
-			procps \
+      pinentry \
+      procps \
+      python3 \
+      python3-devel \
       python3-numpy \
+      python3-pip \
+      python3-tkinter \
       qt5-qtwebengine-devel \
       redhat-lsb-core \
       readline-devel \
-			shadow-utils \
-			sudo \
-			time \
-			util-linux \
-			wget \
-			vte-profile
+      shadow-utils \
+      sudo \
+      time \
+      util-linux \
+      wget \
+      vte-profile
 
 RUN python3 -m pip install --no-cache-dir cmake==3.22
 
