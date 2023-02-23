@@ -1,6 +1,9 @@
 
-FROM ubuntu:20.04
-LABEL ubuntu.version="20.04"
+# this image is deprecated and is not being maintained,
+#   we may seem builds fail to retrieve this image if it
+#   drops from DockerHub
+FROM centos:7
+LABEL centos.version="7"
 MAINTAINER Tom Eichlersmith <eichl008@umn.edu>
 
 ###############################################################################
@@ -13,27 +16,48 @@ ENV __wget wget -q -O -
 ENV __untar tar -xz --strip-components=1 --directory 
 ENV __prefix /usr/local
 
+# In yum family official images, yum is configured to ignore locale and docs
+# This however, results in a rather poor out-of-the-box experience
+# So, let's enable them.
+RUN sed -i '/tsflags=nodocs/d' /etc/yum.conf
+
+RUN yum install -y \
+      bash \
+      binutils \
+      zsh \
+			bc \
+			curl \
+      dialog \
+			diffutils \
+			findutils \
+			gnupg2 \
+			less \
+			lsof \
+			ncurses \
+			passwd \
+			pinentry \
+			procps \
+			shadow-utils \
+			sudo \
+			time \
+			util-linux \
+			wget \
+			vte-profile
+
 # First install any required dependencies from ubuntu repos
 # Ongoing documentation for this list is in docs/ubuntu-packages.md
 RUN apt-get update &&\
     DEBIAN_FRONTEND=noninteractive \
     apt-get install -y \
-        apt-utils \
-        bc \
         binutils \
         ca-certificates \
-        curl \
-        dialog \
-        diffutils \
-        findutils \
+        cmake \
         default-jre \
         fonts-freefont-ttf \
         g++ \
         gcc \
         gfortran \
-        gnupg2 \
         git \
-        less \
         libafterimage-dev \
         libfftw3-dev \
         libfreetype6-dev \
@@ -59,23 +83,14 @@ RUN apt-get update &&\
         libxpm-dev \
         libz-dev \
         libzstd-dev \
-        lsof \
         locales \
         make \
-        ncurses-base \
-        passwd \
-        pinentry-curses \
-        procps \
         python3-dev \
         python3-pip \
         python3-numpy \
         python3-tk \
         python-is-python3 \
         srm-ifce-dev \
-        sudo \
-        time \
-        util-linux \
-        wget \
     && rm -rf /var/lib/apt/lists/* &&\
     apt-get autoremove --purge &&\
     apt-get clean all &&\
