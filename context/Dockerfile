@@ -22,6 +22,7 @@ ENV __prefix /usr/local
 RUN sed -i '/tsflags=nodocs/d' /etc/yum.conf
 
 RUN yum install -y \
+      avahi-compat-libdns_sd-devel \
       bash \
       binutils \
       zsh \
@@ -29,14 +30,39 @@ RUN yum install -y \
 			curl \
       dialog \
 			diffutils \
+      fftw-devel \
 			findutils \
+      ftgl-devel \
+      gcc \
+      gcc-c++ \
+      gcc-gfortran \
+      git \
+      glew-devel \
 			gnupg2 \
+      graphviz-devel \
+      gsl-devel \
 			less \
+      libuuid-devel \
+      libX11-devel \
+      libXext-devel \
+      libXft-devel \
+      libxml2-devel \
+      libXpm-devel \
 			lsof \
+      make \
+      mesa-libGL-devel \
+      mesa-libGLU-devel \
 			ncurses \
+      openldap-devel \
+      openssl-devel \
 			passwd \
+      pcre-devel \
 			pinentry \
 			procps \
+      python3-numpy \
+      qt5-qtwebengine-devel \
+      redhat-lsb-core \
+      readline-devel \
 			shadow-utils \
 			sudo \
 			time \
@@ -44,58 +70,7 @@ RUN yum install -y \
 			wget \
 			vte-profile
 
-# First install any required dependencies from ubuntu repos
-# Ongoing documentation for this list is in docs/ubuntu-packages.md
-RUN apt-get update &&\
-    DEBIAN_FRONTEND=noninteractive \
-    apt-get install -y \
-        binutils \
-        ca-certificates \
-        cmake \
-        default-jre \
-        fonts-freefont-ttf \
-        g++ \
-        gcc \
-        gfortran \
-        git \
-        libafterimage-dev \
-        libfftw3-dev \
-        libfreetype6-dev \
-        libftgl-dev \
-        libgif-dev \
-        libgl1-mesa-dev \
-        libgl2ps-dev \
-        libglew-dev \
-        libglu-dev \
-        libgsl-dev \
-        libjpeg-dev \
-        liblz4-dev \
-        liblzma-dev \
-        libnss-myhostname \
-        libpcre++-dev \
-        libpng-dev \
-        libssl-dev \
-        libx11-dev \
-        libxext-dev \  
-        libxft-dev \
-        libxml2-dev \
-        libxmu-dev \
-        libxpm-dev \
-        libz-dev \
-        libzstd-dev \
-        locales \
-        make \
-        python3-dev \
-        python3-pip \
-        python3-numpy \
-        python3-tk \
-        python-is-python3 \
-        srm-ifce-dev \
-    && rm -rf /var/lib/apt/lists/* &&\
-    apt-get autoremove --purge &&\
-    apt-get clean all &&\
-    python3 -m pip install --no-cache-dir \
-        cmake==3.25
+RUN python3 -m pip install --no-cache-dir cmake==3.22
 
 ###############################################################################
 # java and its build tool maeven
