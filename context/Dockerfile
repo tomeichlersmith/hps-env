@@ -33,9 +33,6 @@ RUN yum install -y \
       fftw-devel \
       findutils \
       ftgl-devel \
-      gcc \
-      gcc-c++ \
-      gcc-gfortran \
       git \
       glew-devel \
       gnupg2 \
@@ -73,6 +70,14 @@ RUN yum install -y \
       util-linux \
       wget \
       vte-profile
+
+# gcc-8 can be installed via the developer toolset
+RUN yum install -y centos-release-scl
+
+RUN yum install -y \
+      devtoolset-8-gcc \
+      devtoolset-8-gcc-c++ \
+      devtoolset-8-gcc-gfortran
 
 RUN python3 -m pip install --no-cache-dir cmake==3.22
 
