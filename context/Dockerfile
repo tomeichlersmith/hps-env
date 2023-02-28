@@ -106,8 +106,7 @@ ENV LCIO_DIR=${__prefix}
 ENV LCIO_INCLUDE_DIRS=${LCIO_DIR}/include
 ENV IO_LCIO_LIBRARY=${LCIO_DIR}/lib/liblcio.so
 ENV LD_LIBRARY_PATH=${LCIO_DIR}/lib:${LD_LIBRARY_PATH}
-RUN mkdir src &&\
-    git clone https://github.com/JeffersonLab/hps-lcio.git src &&\
+RUN git clone https://github.com/JeffersonLab/hps-lcio.git src &&\
     mkdir src/build &&\
     cd src/build &&\
     cmake \
@@ -171,10 +170,9 @@ RUN mkdir src &&\
 ###############################################################################
 # GeneralBrokenLines
 ###############################################################################
-LABEL gbl.version=2.2.0
-RUN mkdir src &&\
-    ${__wget} https://github.com/pbutti/GeneralBrokenLines/tarball/master |\
-      ${__untar} src &&\
+LABEL gbl.version=3.0.0
+RUN git clone --depth 1 --branch V03-00-00 \
+      https://gitlab.desy.de/claus.kleinwort/general-broken-lines.git src &&\
     echo "# removed on purpose" > src/cpp/cmake/ilcsoft_default_install_prefix.cmake &&\
     cmake \
       -DCMAKE_INSTALL_PREFIX=${__prefix} \
@@ -280,9 +278,10 @@ RUN git clone https://github.com/slaclab/lcdd src &&\
 #   Used for tracker alignment
 #   No publicly availabe repository so we have to carry around the tarball here
 ###############################################################################
-LABEL millepedeII.version="unknown"
-ADD ./MillepedeII.tar.gz /src/
-RUN cd /src/MillepedeII/ &&\
+LABEL millepedeII.version="V04-12-03"
+RUN git clone --depth 1 --branch V04-12-03 \
+      https://gitlab.desy.de/claus.kleinwort/millepede-ii.git src &&\
+    cd src &&\
     sed -i 's|^PREFIX =.*$|PREFIX = /usr/local|' Makefile &&\
     make install &&\
     cd / && rm -rf src
