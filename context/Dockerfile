@@ -81,6 +81,19 @@ RUN yum install -y \
 
 RUN python3 -m pip install --no-cache-dir cmake==3.22
 
+# copy in the env PATH variables defined in the devtoolset-8 enable script
+#    these are the first time many of these are defined so we only include
+#    the suffix of the original variable for PATH
+ENV PATH=/opt/rh/devtoolset-8/root/usr/bin:${PATH}
+ENV MANPATH=/opt/rh/devtoolset-8/root/usr/share/man
+ENV INFOPATH=/opt/rh/devltoolset-8/root/usr/share/info
+ENV PCP_DIR=/opt/rh/devtoolset-8/root
+ENV PERL5LIB=/opt/rh/devtoolset-8/root/usr/lib64/perl5/vendor_perl:/opt/rh/devtoolset-8/root/usr/lib/perl5:/opt/rh/devtoolset-8/root/usr/share/perl5/vendor_perl
+ENV LD_LIBRARY_PATH=/opt/rh/devltoolset-8/root/usr/lib64:/opt/rh/devltoolset-8/root/usr/lib
+ENV PYTHONPATH=/opt/rh/devtoolset-8/root/usr/lib64/python2.7/site-packages:/opt/rh/devtoolset-8/root/usr/lib/python2.7/site-packages
+ENV PKG_CONFIG_PATH=/opt/rh/devtoolset-8/root/usr/lib64/pkgconfig
+
+
 ###############################################################################
 # java and its build tool maeven
 #   both are just unpacking precompiled binaries for Linux into /usr/local
@@ -92,9 +105,11 @@ ENV JAVA_HOME=/usr/local/java
 ENV MVN_HOME=/usr/local/mvn
 ENV PATH=${JAVA_HOME}/bin:${MVN_HOME}/bin:${PATH}
 RUN mkdir ${JAVA_HOME} ${MVN_HOME} &&\
-    ${__wget} https://download.java.net/java/GA/jdk15.0.1/51f4f36ad4ef43e39d0dfdbaf6549e32/9/GPL/openjdk-15.0.1_linux-x64_bin.tar.gz |\
+    ${__wget} --no-check-certificate \
+      https://download.java.net/java/GA/jdk15.0.1/51f4f36ad4ef43e39d0dfdbaf6549e32/9/GPL/openjdk-15.0.1_linux-x64_bin.tar.gz |\
       ${__untar} ${JAVA_HOME} &&\
-    ${__wget} https://dlcdn.apache.org/maven/maven-3/3.9.0/binaries/apache-maven-3.9.0-bin.tar.gz |\
+    ${__wget} --no-check-certificate \
+      https://dlcdn.apache.org/maven/maven-3/3.9.0/binaries/apache-maven-3.9.0-bin.tar.gz |\
       ${__untar} ${MVN_HOME}
 
 ###############################################################################
