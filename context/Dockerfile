@@ -312,12 +312,17 @@ RUN ldconfig -v
 
 ###############################################################################
 # Extra Python packages
+#   Need to update pip first
 ###############################################################################
 RUN python3 -m pip install --upgrade --no-cache-dir \
+        pip &&\
+    python3 -m pip install --upgrade --no-cache-dir \
         Cython \
         uproot \
         numpy \
         matplotlib \
         mplhep \
         pandas \
+        awkward \
+        "hist[plot]" \
         "typer[all]"
