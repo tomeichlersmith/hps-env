@@ -44,7 +44,8 @@ Then you can enter the environment.
 distrobox enter hps-env
 ```
 Now you are in a terminal inside the box with all the HPS dependencies installed.
-It is Ubuntu 20.04 and is connected to your screen for graphical apps.
+It is CentOS7 (v2+, Ubuntu 20.04 for versions less than 2) and is connected to your 
+screen for graphical apps.
 You have password-less `sudo` access to install anything else into the box you may
 want. Changes to the box will not be persisted if the box is ever "stopped" but
 generally the only time boxes are stopped are when a computer is rebooted.
