@@ -30,7 +30,8 @@ be replaced by any version of the image that is later than v1.
 ### docker or podman and distrobox
 Create a distrobox using the image built from this repo on DockerHub.
 ```
-distrobox create --image tomeichlersmith/hps-env:v1.0.0 \
+distrobox create \
+  --image tomeichlersmith/hps-env:v1.0.0 \
   --name hps-env \
   --home /full/path/to/hps
 ```
@@ -61,12 +62,23 @@ apptainer build hps-env-v1.0.0.sif docker://tomeichlersmith/hps-env:v1.0.0
 
 Second, we enter the environment by opening a shell with apptainer.
 ```
-apptainer shell --env "PS1=${PS1}" \
+apptainer run \
+  --env "PS1=${PS1}" \
   --env "LS_COLORS=${LS_COLORS}" \
   --hostname hps-env.$(uname -n) \
-  --home /full/path/to/hps \
-  hps-env-v1.0.0.sif
+  --home /full/path/to/hps \ # NO trailing slash
+  hps-env-v1.0.0.sif \
+  /bin/bash -i # make shell interactive
 ```
+
+Make sure there isn't a trailing slash when you define the new home directory.
+Leaving the trailing slash means that the prompt won't be able to effectively shorten
+that home directory to the tilde character '~' like in a normal bash.
+
+Ask for bash to be interactive `-i`. This will print some warnings since apptainer
+doesn't have access the to group mappings that the host computer has, but it will
+source the bash init files _in the new home directory_ allowing you to specialize the
+container-internal shell as you see fit (e.g. updating the PATH variable or whatever)
 
 This shell isn't as pretty or as well integrated with the host as the one produced by distrobox;
 however, it is still functional. (Note: `apptainer` is the new name for `singularity` and has
