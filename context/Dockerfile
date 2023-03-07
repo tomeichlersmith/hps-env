@@ -25,6 +25,7 @@ RUN apt-get update &&\
         curl \
         dialog \
         diffutils \
+        expect \
         findutils \
         default-jre \
         fonts-freefont-ttf \
