@@ -30,6 +30,7 @@ RUN yum install -y \
       curl \
       dialog \
       diffutils \
+      expect \
       fftw-devel \
       findutils \
       ftgl-devel \
@@ -45,6 +46,8 @@ RUN yum install -y \
       libXft-devel \
       libxml2-devel \
       libXpm-devel \
+      libXrender \
+      libXtst \
       lsof \
       make \
       mesa-libGL-devel \
