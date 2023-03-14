@@ -320,12 +320,16 @@ RUN ldconfig -v
 RUN python3 -m pip install --upgrade --no-cache-dir \
         pip &&\
     python3 -m pip install --upgrade --no-cache-dir \
+        autopep8 \
         Cython \
+        jinja2
         uproot \
         numpy \
         matplotlib \
         mplhep \
         pandas \
+        psutil \
+        pycodestyle \
         awkward \
         "hist[plot]" \
         "typer[all]"
