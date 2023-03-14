@@ -322,7 +322,7 @@ RUN python3 -m pip install --upgrade --no-cache-dir \
     python3 -m pip install --upgrade --no-cache-dir \
         autopep8 \
         Cython \
-        jinja2
+        jinja2 \
         uproot \
         numpy \
         matplotlib \
