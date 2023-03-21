@@ -294,14 +294,14 @@ RUN git clone https://github.com/slaclab/lcdd src &&\
 ###############################################################################
 # MillepedeII
 #   Used for tracker alignment
-#   No publicly availabe repository so we have to carry around the tarball here
 ###############################################################################
-LABEL millepedeII.version="unknown"
-ADD ./MillepedeII.tar.gz /src/
-RUN cd /src/MillepedeII/ &&\
+LABEL millepedeII.version="V04-12-03"
+RUN git clone --depth 1 --branch V04-12-03 \
+      https://gitlab.desy.de/claus.kleinwort/millepede-ii.git &&\
+    cd millepede-ii &&\
     sed -i 's|^PREFIX =.*$|PREFIX = /usr/local|' Makefile &&\
     make install &&\
-    cd / && rm -rf src
+    cd / && rm -rf millepede-ii
 
 ###############################################################################
 # Generate the linker cache
