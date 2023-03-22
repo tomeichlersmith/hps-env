@@ -295,8 +295,8 @@ RUN git clone https://github.com/slaclab/lcdd src &&\
 # MillepedeII
 #   Used for tracker alignment
 ###############################################################################
-LABEL millepedeII.version="V04-12-03"
-RUN git clone --depth 1 --branch V04-12-03 \
+LABEL millepedeII.version="V04-13-01"
+RUN git clone --depth 1 --branch V04-13-01 \
       https://gitlab.desy.de/claus.kleinwort/millepede-ii.git &&\
     cd millepede-ii &&\
     sed -i 's|^PREFIX =.*$|PREFIX = /usr/local|' Makefile &&\
