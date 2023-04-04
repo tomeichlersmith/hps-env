@@ -188,21 +188,17 @@ RUN mkdir src &&\
 ###############################################################################
 # GeneralBrokenLines
 ###############################################################################
-LABEL gbl.version=2.2.0
-RUN mkdir src &&\
-    ${__wget} https://github.com/pbutti/GeneralBrokenLines/tarball/master |\
-      ${__untar} src &&\
-    echo "# removed on purpose" > src/cpp/cmake/ilcsoft_default_install_prefix.cmake &&\
+LABEL gbl.version="V03-01-00"
+RUN git clone --depth 1 --branch V03-01-00 \
+      https://gitlab.desy.de/claus.kleinwort/general-broken-lines.git &&\
     cmake \
-      -DCMAKE_INSTALL_PREFIX=${__prefix} \
-      -B src/cpp/build \
-      -S src/cpp \
-    &&\
+      -B general-broken-lines/build \
+      -S general-broken-lines \
+      -DCMAKE_INSTALL_PREFIX=/usr/local &&\
     cmake \
-      --build src/cpp/build \
-      --target install \
-    &&\
-    rm -rf src
+      --build general-broken-lines/build \
+      --target install &&\
+    rm -rf general-broken-lines
 
 ################################################################################
 # Xerces-C 
