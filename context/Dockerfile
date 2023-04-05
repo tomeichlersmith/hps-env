@@ -193,7 +193,7 @@ RUN git clone --depth 1 --branch V03-01-00 \
       https://gitlab.desy.de/claus.kleinwort/general-broken-lines.git &&\
     cmake \
       -B general-broken-lines/build \
-      -S general-broken-lines \
+      -S general-broken-lines/cpp \
       -DCMAKE_INSTALL_PREFIX=/usr/local &&\
     cmake \
       --build general-broken-lines/build \
