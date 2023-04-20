@@ -1,10 +1,75 @@
-
-# this image is deprecated and is not being maintained,
-#   we may seem builds fail to retrieve this image if it
-#   drops from DockerHub
-FROM centos:7
-LABEL centos.version="7"
+FROM ubuntu:20.04
+LABEL ubuntu.version="20.04"
 MAINTAINER Tom Eichlersmith <eichl008@umn.edu>
+
+# First install any required dependencies from ubuntu repos
+# Ongoing documentation for this list is in docs/ubuntu-packages.md
+RUN apt-get update &&\
+    DEBIAN_FRONTEND=noninteractive \
+    apt-get install -y \
+        apt-utils \
+        bc \
+        binutils \
+        ca-certificates \
+        curl \
+        dialog \
+        diffutils \
+        findutils \
+        default-jre \
+        fonts-freefont-ttf \
+        g++ \
+        gcc \
+        gfortran \
+        gnupg2 \
+        git \
+        less \
+        libafterimage-dev \
+        libfftw3-dev \
+        libfreetype6-dev \
+        libftgl-dev \
+        libgif-dev \
+        libgl1-mesa-dev \
+        libgl2ps-dev \
+        libglew-dev \
+        libglu-dev \
+        libgsl-dev \
+        libjpeg-dev \
+        liblz4-dev \
+        liblzma-dev \
+        libnss-myhostname \
+        libpcre++-dev \
+        libpng-dev \
+        libssl-dev \
+        libx11-dev \
+        libxext-dev \  
+        libxft-dev \
+        libxml2-dev \
+        libxmu-dev \
+        libxpm-dev \
+        libz-dev \
+        libzstd-dev \
+        lsof \
+        locales \
+        make \
+        ncurses-base \
+        passwd \
+        pinentry-curses \
+        procps \
+        python3-dev \
+        python3-pip \
+        python3-numpy \
+        python3-tk \
+        python-is-python3 \
+        srm-ifce-dev \
+        sudo \
+        time \
+        util-linux \
+        wget \
+    && rm -rf /var/lib/apt/lists/* &&\
+    apt-get autoremove --purge &&\
+    apt-get clean all &&\
+    python3 -m pip install --no-cache-dir \
+        cmake~=3.22
 
 ###############################################################################
 # Source-Code Downloading Method
@@ -15,87 +80,6 @@ MAINTAINER Tom Eichlersmith <eichl008@umn.edu>
 ENV __wget wget -q -O -
 ENV __untar tar -xz --strip-components=1 --directory 
 ENV __prefix /usr/local
-
-# In yum family official images, yum is configured to ignore locale and docs
-# This however, results in a rather poor out-of-the-box experience
-# So, let's enable them.
-RUN sed -i '/tsflags=nodocs/d' /etc/yum.conf
-
-RUN yum install -y \
-      avahi-compat-libdns_sd-devel \
-      bash \
-      binutils \
-      zsh \
-      bc \
-      curl \
-      dialog \
-      diffutils \
-      expect \
-      fftw-devel \
-      findutils \
-      ftgl-devel \
-      git \
-      glew-devel \
-      gnupg2 \
-      graphviz-devel \
-      gsl-devel \
-      less \
-      libuuid-devel \
-      libX11-devel \
-      libXext-devel \
-      libXft-devel \
-      libxml2-devel \
-      libXpm-devel \
-      libXrender \
-      libXtst \
-      lsof \
-      make \
-      mesa-libGL-devel \
-      mesa-libGLU-devel \
-      ncurses \
-      openldap-devel \
-      openssl-devel \
-      passwd \
-      pcre-devel \
-      pinentry \
-      procps \
-      python3 \
-      python3-devel \
-      python3-numpy \
-      python3-pip \
-      python3-tkinter \
-      qt5-qtwebengine-devel \
-      redhat-lsb-core \
-      readline-devel \
-      shadow-utils \
-      sudo \
-      time \
-      util-linux \
-      wget \
-      vte-profile
-
-# gcc-8 can be installed via the developer toolset
-RUN yum install -y centos-release-scl
-
-RUN yum install -y \
-      devtoolset-8-gcc \
-      devtoolset-8-gcc-c++ \
-      devtoolset-8-gcc-gfortran
-
-RUN python3 -m pip install --no-cache-dir cmake==3.22
-
-# copy in the env PATH variables defined in the devtoolset-8 enable script
-#    these are the first time many of these are defined so we only include
-#    the suffix of the original variable for PATH
-ENV PATH=/opt/rh/devtoolset-8/root/usr/bin:${PATH}
-ENV MANPATH=/opt/rh/devtoolset-8/root/usr/share/man
-ENV INFOPATH=/opt/rh/devltoolset-8/root/usr/share/info
-ENV PCP_DIR=/opt/rh/devtoolset-8/root
-ENV PERL5LIB=/opt/rh/devtoolset-8/root/usr/lib64/perl5/vendor_perl:/opt/rh/devtoolset-8/root/usr/lib/perl5:/opt/rh/devtoolset-8/root/usr/share/perl5/vendor_perl
-ENV LD_LIBRARY_PATH=/opt/rh/devltoolset-8/root/usr/lib64:/opt/rh/devltoolset-8/root/usr/lib
-ENV PYTHONPATH=/opt/rh/devtoolset-8/root/usr/lib64/python2.7/site-packages:/opt/rh/devtoolset-8/root/usr/lib/python2.7/site-packages
-ENV PKG_CONFIG_PATH=/opt/rh/devtoolset-8/root/usr/lib64/pkgconfig
-
 
 ###############################################################################
 # java and its build tool maeven
