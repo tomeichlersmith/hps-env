@@ -244,9 +244,16 @@ RUN git clone https://github.com/slaclab/heppdt src &&\
 
 ###############################################################################
 # GDML
+#   We need to write the C++ standard into the CMakeLists as a compiler
+#   definition because the current CMakeLists.txt code doesn't properly
+#   handle applying the Geant4 compiler definitions (allowing them to
+#   overwrite the definitions deduced by CMake) /and/ a patch to the GCC STD
+#   library now generates a compiler error when gdml tries to access a
+#   certain header without C++11 std active.
 ###############################################################################
 LABEL gdml.version="3.1.2"
 RUN git clone https://github.com/slaclab/gdml src &&\
+    sed -i '70i ADD_DEFINITIONS("-std=c++11")' src/CMakeLists.txt &&\
     cmake \
       -DCMAKE_INSTALL_PREFIX=${__prefix} \
       -B src/build \
