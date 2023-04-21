@@ -211,6 +211,7 @@ RUN mkdir src &&\
         -DGEANT4_INSTALL_DATA=ON \
         -DGEANT4_USE_GDML=ON \
         -DGEANT4_INSTALL_EXAMPLES=OFF \
+        -DGEANT4_USE_OPENGL_X11=ON \
         -DCMAKE_INSTALL_PREFIX=${__prefix} \
         -B src/build \
         -S src \
