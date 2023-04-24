@@ -50,7 +50,7 @@ You have password-less `sudo` access to install anything else into the box you m
 want. Changes to the box will not be persisted if the box is ever "stopped" but
 generally the only time boxes are stopped are when a computer is rebooted.
 
-### singularity and apptainer
+### singularity or apptainer
 There is ongoing work to include support for more container runtimes in distrobox
 ([Issue #511](https://github.com/89luca89/distrobox/issues/511)), so until that is 
 completed the best option is using the `shell` subcommand.
@@ -58,12 +58,21 @@ completed the best option is using the `shell` subcommand.
 Similar to above, it is a two-step procedure. First, we need to download the
 image holding all of the HPS software dependencies.
 ```
-apptainer build hps-env-v1.0.0.sif docker://tomeichlersmith/hps-env:v1.0.0
+singularity build hps-env-v1.0.0.sif docker://tomeichlersmith/hps-env:v1.0.0
+```
+_Side Note_: On SLAC's SDF, the temp directories are not allocated a lot of
+space and singularity/apptainer needs a lot of space, so it is advised to 
+define two environment variables to make sure that singularity has enough
+space for building the layers.
+```
+# on SLAC's SDF only, before running the build command above
+export TMPDIR=/scratch/$USER
+export SINGULARITY_CACHEDIR=/scratch/$USER
 ```
 
-Second, we enter the environment by opening a shell with apptainer.
+Second, we enter the environment by opening a shell with singularity.
 ```
-apptainer run \
+singularity run \
   --env "PS1=${PS1}" \
   --env "LS_COLORS=${LS_COLORS}" \
   --hostname hps-env.$(uname -n) \
