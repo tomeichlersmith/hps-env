@@ -292,6 +292,22 @@ RUN git clone --depth 1 --branch V04-13-01 \
     cd / && rm -rf millepede-ii
 
 ###############################################################################
+# slic
+#   Default slic install for folks not needing to develop it.
+###############################################################################
+LABEL slic.version="v6.1.1"
+RUN git clone --depth 1 --branch v6.1.1 \
+      https://github.com/slaclab/slic.git src &&\
+    cmake \
+      -DINSTALL_DOC=OFF \
+      -DQT_VIS=ON \
+      -DWITH_GEANT4_UIVIS=ON \
+      -B src/build \
+      -S src &&\
+    cmake --build src/build --target install &&\
+    rm -rf src
+
+###############################################################################
 # Generate the linker cache
 #    This should go AFTER all compiled dependencies so that the ld cache 
 #    contains all of them.
