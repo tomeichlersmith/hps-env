@@ -299,8 +299,8 @@ LABEL slic.version="v6.1.1"
 RUN git clone --depth 1 --branch v6.1.1 \
       https://github.com/slaclab/slic.git src &&\
     cmake \
+      -DCMAKE_INSTALL_PREFIX=${__prefix} \
       -DINSTALL_DOC=OFF \
-      -DQT_VIS=ON \
       -DWITH_GEANT4_UIVIS=ON \
       -B src/build \
       -S src &&\
