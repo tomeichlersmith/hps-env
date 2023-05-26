@@ -55,6 +55,7 @@ RUN apt-get update &&\
         passwd \
         pinentry-curses \
         procps \
+        python2 \
         python3-dev \
         python3-pip \
         python3-numpy \
