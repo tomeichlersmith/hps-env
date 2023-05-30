@@ -335,6 +335,7 @@ RUN python3 -m pip install --upgrade --no-cache-dir \
         pandas \
         psutil \
         pycodestyle \
+        Sphinx \
         awkward \
         "hist[plot]" \
         "typer[all]"
