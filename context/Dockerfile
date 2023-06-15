@@ -97,7 +97,7 @@ RUN mkdir ${JAVA_HOME} ${MVN_HOME} &&\
       https://download.java.net/java/GA/jdk15.0.1/51f4f36ad4ef43e39d0dfdbaf6549e32/9/GPL/openjdk-15.0.1_linux-x64_bin.tar.gz |\
       ${__untar} ${JAVA_HOME} &&\
     ${__wget} --no-check-certificate \
-      https://dlcdn.apache.org/maven/maven-3/3.9.1/binaries/apache-maven-3.9.1-bin.tar.gz |\
+      https://archive.apache.org/dist/maven/maven-3/3.9.1/binaries/apache-maven-3.9.1-bin.tar.gz |\
       ${__untar} ${MVN_HOME}
 
 ###############################################################################
