@@ -134,6 +134,7 @@ RUN mkdir src &&\
     cmake \
       -DCMAKE_BUILD_TYPE=Release \
       -DCMAKE_INSTALL_PREFIX=${__prefix} \
+      -DCMAKE_CXX_STANDARD=17 \
       -Dgminimal=ON \
       -Dasimage=ON \
       -Dgdml=ON \
