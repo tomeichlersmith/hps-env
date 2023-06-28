@@ -22,6 +22,7 @@ RUN apt-get update &&\
         gfortran \
         gnupg2 \
         git \
+        jq \
         less \
         libafterimage-dev \
         libfftw3-dev \
