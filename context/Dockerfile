@@ -280,6 +280,9 @@ RUN git clone https://github.com/slaclab/lcdd src &&\
     cmake \
       --build src/build \
       --target install \
+    &&\
+    mkdir -p ${__prefix}/share/data/lcdd/1.0 &&\
+    ./src/scripts/download_lcdd_schemas.sh ${__prefix}/share/data/lcdd/1.0 &&\
     && rm -rf src
 
 ###############################################################################
