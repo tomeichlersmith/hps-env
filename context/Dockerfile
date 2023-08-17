@@ -280,9 +280,6 @@ RUN git clone https://github.com/slaclab/lcdd src &&\
     cmake \
       --build src/build \
       --target install \
-    &&\
-    mkdir -p ${__prefix}/share/data/lcdd/1.0 &&\
-    ./src/scripts/download_lcdd_schemas.sh ${__prefix}/share/data/lcdd/1.0 &&\
     && rm -rf src
 
 ###############################################################################
@@ -300,6 +297,8 @@ RUN git clone --depth 1 --branch V04-13-01 \
 ###############################################################################
 # slic
 #   Default slic install for folks not needing to develop it.
+#   Also set the GDML_SCHEMA_DIR environment variable so slic knows
+#   where the pre-downloaded schema files are
 ###############################################################################
 LABEL slic.version="v6.1.1"
 RUN git clone --depth 1 --branch v6.1.1 \
@@ -312,6 +311,7 @@ RUN git clone --depth 1 --branch v6.1.1 \
       -S src &&\
     cmake --build src/build --target install &&\
     rm -rf src
+ENV GDML_SCHEMA_DIR=${__prefix}/share
 
 ###############################################################################
 # Generate the linker cache
