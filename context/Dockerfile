@@ -71,7 +71,7 @@ RUN apt-get update &&\
     apt-get autoremove --purge &&\
     apt-get clean all &&\
     python3 -m pip install --no-cache-dir \
-        cmake~=3.22
+        cmake==3.26
 
 ###############################################################################
 # Source-Code Downloading Method
