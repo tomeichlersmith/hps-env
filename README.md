@@ -27,6 +27,24 @@ and just wish to use it, all you need is a container runner (and distrobox).
 Below, I use the tag `v1.0.0` of the container as an example. This tag can
 be replaced by any version of the image that is later than v1.
 
+### denv
+The [denv](https://github.com/tomeichlersmith/denv) program requires a container 
+runner (docker, podman, singularity, or apptainer) to be installed but then operates
+the same for all of them.
+
+Initialize a workspace to use this image as the base image for the development environment.
+```
+denv init tomeichlersmith/hps-env:v1.0.0
+```
+Then enter the environment
+```
+denv
+```
+Or simply run a command through the environment rather than your normal shell.
+```
+denv echo "Hello from inside the denv"
+```
+
 ### docker or podman and distrobox
 Create a distrobox using the image built from this repo on DockerHub.
 ```
