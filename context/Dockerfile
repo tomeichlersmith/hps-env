@@ -343,4 +343,5 @@ RUN python3 -m pip install --upgrade --no-cache-dir \
         Sphinx \
         awkward \
         "hist[plot]" \
-        "typer[all]"
+        "typer[all]" \
+        vector
