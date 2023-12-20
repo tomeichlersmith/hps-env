@@ -150,8 +150,6 @@ RUN mkdir src &&\
     rm -rf build src
 ENV ROOTSYS=${__prefix}
 ENV PYTHONPATH=${ROOTSYS}/lib/root:${PYTHONPATH}
-ENV JUPYTER_PATH=${ROOTSYS}/etc/notebook:${JUPYTER_PATH}
-ENV JUPYTER_CONFIG_DIR=${ROOTSYS}/etc/notebook:${JUPYTER_CONFIG_DIR}
 ENV CLING_STANDARD_PCH=none
 
 ###############################################################################
