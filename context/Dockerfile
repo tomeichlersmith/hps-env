@@ -188,9 +188,9 @@ RUN git clone --depth 1 --branch V03-01-00 \
 ################################################################################
 # Xerces-C 
 ################################################################################
-LABEL xercesc.version="3.2.3"
+LABEL xercesc.version="3.2.5"
 RUN mkdir src &&\
-    ${__wget} http://archive.apache.org/dist/xerces/c/3/sources/xerces-c-3.2.3.tar.gz |\
+    ${__wget} http://archive.apache.org/dist/xerces/c/3/sources/xerces-c-3.2.5.tar.gz |\
       ${__untar} src &&\
     cmake -B src/build -S src -DCMAKE_INSTALL_PREFIX=${__prefix} &&\
     cmake --build src/build --target install &&\
@@ -203,43 +203,48 @@ RUN mkdir src &&\
 #   a system path. We just need to copy the environment variables defining
 #   the location of datasets.
 ###############################################################################
-ENV GEANT4=v10.7.4
+ENV GEANT4=v10.6.1
 LABEL geant4.version="${GEANT4}"
 RUN mkdir src &&\
     ${__wget} https://github.com/geant4/geant4/archive/${GEANT4}.tar.gz |\
       ${__untar} src &&\
     cmake \
+        -DGEANT4_USE_SYSTEM_EXPAT=OFF \
         -DGEANT4_INSTALL_DATA=ON \
         -DGEANT4_USE_GDML=ON \
         -DGEANT4_INSTALL_EXAMPLES=OFF \
-        -DGEANT4_USE_OPENGL_X11=ON \
+        -DGEANT4_USE_OPENGL_X11=OFF \
+        -DGEANT4_USE_QT=OFF \
         -DCMAKE_INSTALL_PREFIX=${__prefix} \
         -B src/build \
         -S src \
         &&\
     cmake --build src/build --target install &&\
     rm -rf src 
-ENV G4NEUTRONHPDATA="${__prefix}/share/Geant4-10.7.4/data/G4NDL4.6"
-ENV G4LEDATA="${__prefix}/share/Geant4-10.7.4/data/G4EMLOW7.13"
-ENV G4LEVELGAMMADATA="${__prefix}/share/Geant4-10.7.4/data/PhotonEvaporation5.7"
-ENV G4RADIOACTIVEDATA="${__prefix}/share/Geant4-10.7.4/data/RadioactiveDecay5.6"
-ENV G4PARTICLEXSDATA="${__prefix}/share/Geant4-10.7.4/data/G4PARTICLEXS3.1.1"
-ENV G4PIIDATA="${__prefix}/share/Geant4-10.7.4/data/G4PII1.3"
-ENV G4REALSURFACEDATA="${__prefix}/share/Geant4-10.7.4/data/RealSurface2.2"
-ENV G4SAIDXSDATA="${__prefix}/share/Geant4-10.7.4/data/G4SAIDDATA2.0"
-ENV G4ABLADATA="${__prefix}/share/Geant4-10.7.4/data/G4ABLA3.1"
-ENV G4INCLDATA="${__prefix}/share/Geant4-10.7.4/data/G4INCL1.0"
-ENV G4ENSDFSTATEDATA="${__prefix}/share/Geant4-10.7.4/data/G4ENSDFSTATE2.3"
+ENV G4NEUTRONHPDATA="${__prefix}/share/Geant4-10.6.1/data/G4NDL4.6"
+ENV G4LEDATA="${__prefix}/share/Geant4-10.6.1/data/G4EMLOW7.9.1"
+ENV G4LEVELGAMMADATA="${__prefix}/share/Geant4-10.6.1/data/PhotonEvaporation5.5"
+ENV G4RADIOACTIVEDATA="${__prefix}/share/Geant4-10.6.1/data/RadioactiveDecay5.4"
+ENV G4PARTICLEXSDATA="${__prefix}/share/Geant4-10.6.1/data/G4PARTICLEXS2.1"
+ENV G4PIIDATA="${__prefix}/share/Geant4-10.6.1/data/G4PII1.3"
+ENV G4REALSURFACEDATA="${__prefix}/share/Geant4-10.6.1/data/RealSurface2.1.1"
+ENV G4SAIDXSDATA="${__prefix}/share/Geant4-10.6.1/data/G4SAIDDATA2.0"
+ENV G4ABLADATA="${__prefix}/share/Geant4-10.6.1/data/G4ABLA3.1"
+ENV G4INCLDATA="${__prefix}/share/Geant4-10.6.1/data/G4INCL1.0"
+ENV G4ENSDFSTATEDATA="${__prefix}/share/Geant4-10.6.1/data/G4ENSDFSTATE2.2"
 
 ###############################################################################
 # HepPDT
 ###############################################################################
+ENV HEPPDT_REVISION="99fb1bb9e44e52f4065d8f34e5f3a98fb3d14f85"
 LABEL heppdt.version="3.04.01"
-RUN git clone https://github.com/slaclab/heppdt src &&\
+LABEL heppdt.revision="${HEPPDT_REVISION}"
+RUN git clone https://github.com/slaclab/heppdt src \
+      --branch ${HEPPDT_REVISION} &&\
     cd src &&\
     ./configure \
       --prefix=${__prefix} \
-      --disable-static \
+      --disable-shared \
     && make install &&\
     cd / && rm -rf src
 
@@ -252,8 +257,11 @@ RUN git clone https://github.com/slaclab/heppdt src &&\
 #   library now generates a compiler error when gdml tries to access a
 #   certain header without C++11 std active.
 ###############################################################################
+ENV GDML_REVISION="017d19c6488128ad6f663013cfb1be597c556d51"
+LABEL gdml.revision="${GDML_REVISION}"
 LABEL gdml.version="3.1.2"
-RUN git clone https://github.com/slaclab/gdml src &&\
+RUN git clone https://github.com/slaclab/gdml src \
+      --branch ${GDML_REVISION} &&\
     sed -i '70i ADD_DEFINITIONS("-std=c++11")' src/CMakeLists.txt &&\
     cmake \
       -DCMAKE_INSTALL_PREFIX=${__prefix} \
