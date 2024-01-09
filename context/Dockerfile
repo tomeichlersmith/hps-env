@@ -72,6 +72,9 @@ RUN apt-get update &&\
     apt-get clean all &&\
     python3 -m pip install --no-cache-dir \
         cmake==3.26
+LABEL cmake.version="3.26"
+LABEL python.verson="3.8.10"
+LABEL gnu.version="9.4.0"
 
 ###############################################################################
 # Source-Code Downloading Method
