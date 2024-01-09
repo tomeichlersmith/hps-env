@@ -342,7 +342,7 @@ ENV HPS_JAVA_BIN_JAR=${__prefix}/hps/java/distribution/target/hps-distribution-5
 
 ###############################################################################
 # install hps-mc for its recipes
-#   use its CMake to copy in madGraph as well as stdhep
+#   use its CMake to copy in MadGraph as well as stdhep
 ###############################################################################
 RUN git clone https://github.com/JeffersonLab/hps-mc src &&\
     cmake \
@@ -351,7 +351,8 @@ RUN git clone https://github.com/JeffersonLab/hps-mc src &&\
       -DCMAKE_INSTALL_PREFIX=${__prefix} \
       -B src/build \
       -S src &&\
-    cmake --build src/build --target install
+    cmake --build src/build --target install &&\
+    rm -rf src
 ENV PYTHONPATH=${PYTHONPATH}:${__prefix}/lib/python
 ENV HPSMC_DIR=${__prefix}
 # copy in a hps-mc config file that users can supply when
