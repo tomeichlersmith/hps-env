@@ -17,8 +17,6 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
-    outputs:
-      test_tag: ${{steps.generate_tag.outputs.test_tag}}
     defaults:
       run:
         shell: bash
