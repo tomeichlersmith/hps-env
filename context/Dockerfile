@@ -121,6 +121,130 @@ RUN mkdir src &&\
     mvn clean install -DskipTests -Dcheckstyle.skip &&\
     cd / && rm -rf src
 
+################################################################################
+# Xerces-C 
+################################################################################
+LABEL xercesc.version="3.2.5"
+RUN mkdir src &&\
+    ${__wget} http://archive.apache.org/dist/xerces/c/3/sources/xerces-c-3.2.5.tar.gz |\
+      ${__untar} src &&\
+    cmake -B src/build -S src -DCMAKE_INSTALL_PREFIX=${__prefix} &&\
+    cmake --build src/build --target install &&\
+    rm -rf src
+
+###############################################################################
+# Geant4
+#
+#   The normal ENV variables can be ommitted since we are installing to
+#   a system path. We just need to copy the environment variables defining
+#   the location of datasets.
+###############################################################################
+ENV GEANT4=v10.6.1
+LABEL geant4.version="${GEANT4}"
+RUN mkdir src &&\
+    ${__wget} https://github.com/geant4/geant4/archive/${GEANT4}.tar.gz |\
+      ${__untar} src &&\
+    cmake \
+        -DGEANT4_USE_SYSTEM_EXPAT=OFF \
+        -DGEANT4_INSTALL_DATA=ON \
+        -DGEANT4_USE_GDML=ON \
+        -DGEANT4_INSTALL_EXAMPLES=OFF \
+        -DGEANT4_USE_OPENGL_X11=OFF \
+        -DGEANT4_USE_QT=OFF \
+        -DCMAKE_INSTALL_PREFIX=${__prefix} \
+        -B src/build \
+        -S src \
+        &&\
+    cmake --build src/build --target install -- -j 4 &&\
+    rm -rf src 
+ENV G4NEUTRONHPDATA="${__prefix}/share/Geant4-10.6.1/data/G4NDL4.6"
+ENV G4LEDATA="${__prefix}/share/Geant4-10.6.1/data/G4EMLOW7.9.1"
+ENV G4LEVELGAMMADATA="${__prefix}/share/Geant4-10.6.1/data/PhotonEvaporation5.5"
+ENV G4RADIOACTIVEDATA="${__prefix}/share/Geant4-10.6.1/data/RadioactiveDecay5.4"
+ENV G4PARTICLEXSDATA="${__prefix}/share/Geant4-10.6.1/data/G4PARTICLEXS2.1"
+ENV G4PIIDATA="${__prefix}/share/Geant4-10.6.1/data/G4PII1.3"
+ENV G4REALSURFACEDATA="${__prefix}/share/Geant4-10.6.1/data/RealSurface2.1.1"
+ENV G4SAIDXSDATA="${__prefix}/share/Geant4-10.6.1/data/G4SAIDDATA2.0"
+ENV G4ABLADATA="${__prefix}/share/Geant4-10.6.1/data/G4ABLA3.1"
+ENV G4INCLDATA="${__prefix}/share/Geant4-10.6.1/data/G4INCL1.0"
+ENV G4ENSDFSTATEDATA="${__prefix}/share/Geant4-10.6.1/data/G4ENSDFSTATE2.2"
+
+###############################################################################
+# HepPDT
+###############################################################################
+LABEL heppdt.version="3.04.01"
+RUN git clone https://github.com/slaclab/heppdt src &&\
+    cd src &&\
+    ./configure \
+      --prefix=${__prefix} \
+      --disable-shared \
+    && make install &&\
+    cd / && rm -rf src
+
+###############################################################################
+# GDML
+#   We need to write the C++ standard into the CMakeLists as a compiler
+#   definition because the current CMakeLists.txt code doesn't properly
+#   handle applying the Geant4 compiler definitions (allowing them to
+#   overwrite the definitions deduced by CMake) /and/ a patch to the GCC STD
+#   library now generates a compiler error when gdml tries to access a
+#   certain header without C++11 std active.
+###############################################################################
+LABEL gdml.version="3.1.2"
+RUN git clone https://github.com/slaclab/gdml src &&\
+    sed -i '70i ADD_DEFINITIONS("-std=c++11")' src/CMakeLists.txt &&\
+    cmake \
+      -DCMAKE_INSTALL_PREFIX=${__prefix} \
+      -B src/build \
+      -S src \
+    &&\
+    cmake \
+      --build src/build \
+      --target install \
+    && rm -rf src
+
+###############################################################################
+# LCDD
+###############################################################################
+LABEL lcdd.version="5.0.0"
+RUN git clone https://github.com/slaclab/lcdd src &&\
+    cmake \
+      -DCMAKE_INSTALL_PREFIX=${__prefix} \
+      -B src/build \
+      -S src \
+    &&\
+    cmake \
+      --build src/build \
+      --target install \
+    && rm -rf src
+
+###############################################################################
+# slic
+#   Default slic install for folks not needing to develop it.
+#   Also set the GDML_SCHEMA_DIR environment variable so slic knows
+#   where the pre-downloaded schema files are
+###############################################################################
+LABEL slic.version="v6.1.1"
+RUN git clone --depth 1 --branch v6.1.1 \
+      https://github.com/slaclab/slic.git src &&\
+    cmake \
+      -DCMAKE_INSTALL_PREFIX=${__prefix} \
+      -DINSTALL_DOC=OFF \
+      -DWITH_GEANT4_UIVIS=OFF \
+      -B src/build \
+      -S src &&\
+    cmake --build src/build --target install &&\
+    rm -rf src
+ENV GDML_SCHEMA_DIR=${__prefix}/share
+
+###############################################################################
+# download and unpack the fieldmaps
+#   destination is chosen to be what is expected from hps-mc defaults
+###############################################################################
+RUN git clone https://github.com/JeffersonLab/hps-fieldmaps ${__prefix}/share/fieldmap &&\
+    cd ${__prefix}/share/fieldmap &&\
+    ./unzip.sh
+
 ###############################################################################
 # CERN's ROOT
 #   The ENV variables needed downstream for ROOT running and dedection were
@@ -185,103 +309,6 @@ RUN git clone --depth 1 --branch V03-01-00 \
       --target install &&\
     rm -rf general-broken-lines
 
-################################################################################
-# Xerces-C 
-################################################################################
-LABEL xercesc.version="3.2.5"
-RUN mkdir src &&\
-    ${__wget} http://archive.apache.org/dist/xerces/c/3/sources/xerces-c-3.2.5.tar.gz |\
-      ${__untar} src &&\
-    cmake -B src/build -S src -DCMAKE_INSTALL_PREFIX=${__prefix} &&\
-    cmake --build src/build --target install &&\
-    rm -rf src
-
-###############################################################################
-# Geant4
-#
-#   The normal ENV variables can be ommitted since we are installing to
-#   a system path. We just need to copy the environment variables defining
-#   the location of datasets.
-###############################################################################
-ENV GEANT4=v10.6.1
-LABEL geant4.version="${GEANT4}"
-RUN mkdir src &&\
-    ${__wget} https://github.com/geant4/geant4/archive/${GEANT4}.tar.gz |\
-      ${__untar} src &&\
-    cmake \
-        -DGEANT4_USE_SYSTEM_EXPAT=OFF \
-        -DGEANT4_INSTALL_DATA=ON \
-        -DGEANT4_USE_GDML=ON \
-        -DGEANT4_INSTALL_EXAMPLES=OFF \
-        -DGEANT4_USE_OPENGL_X11=OFF \
-        -DGEANT4_USE_QT=OFF \
-        -DCMAKE_INSTALL_PREFIX=${__prefix} \
-        -B src/build \
-        -S src \
-        &&\
-    cmake --build src/build --target install &&\
-    rm -rf src 
-ENV G4NEUTRONHPDATA="${__prefix}/share/Geant4-10.6.1/data/G4NDL4.6"
-ENV G4LEDATA="${__prefix}/share/Geant4-10.6.1/data/G4EMLOW7.9.1"
-ENV G4LEVELGAMMADATA="${__prefix}/share/Geant4-10.6.1/data/PhotonEvaporation5.5"
-ENV G4RADIOACTIVEDATA="${__prefix}/share/Geant4-10.6.1/data/RadioactiveDecay5.4"
-ENV G4PARTICLEXSDATA="${__prefix}/share/Geant4-10.6.1/data/G4PARTICLEXS2.1"
-ENV G4PIIDATA="${__prefix}/share/Geant4-10.6.1/data/G4PII1.3"
-ENV G4REALSURFACEDATA="${__prefix}/share/Geant4-10.6.1/data/RealSurface2.1.1"
-ENV G4SAIDXSDATA="${__prefix}/share/Geant4-10.6.1/data/G4SAIDDATA2.0"
-ENV G4ABLADATA="${__prefix}/share/Geant4-10.6.1/data/G4ABLA3.1"
-ENV G4INCLDATA="${__prefix}/share/Geant4-10.6.1/data/G4INCL1.0"
-ENV G4ENSDFSTATEDATA="${__prefix}/share/Geant4-10.6.1/data/G4ENSDFSTATE2.2"
-
-###############################################################################
-# HepPDT
-###############################################################################
-LABEL heppdt.version="3.04.01"
-RUN git clone https://github.com/slaclab/heppdt src &&\
-    cd src &&\
-    ./configure \
-      --prefix=${__prefix} \
-      --disable-shared \
-    && make install &&\
-    cd / && rm -rf src
-
-###############################################################################
-# GDML
-#   We need to write the C++ standard into the CMakeLists as a compiler
-#   definition because the current CMakeLists.txt code doesn't properly
-#   handle applying the Geant4 compiler definitions (allowing them to
-#   overwrite the definitions deduced by CMake) /and/ a patch to the GCC STD
-#   library now generates a compiler error when gdml tries to access a
-#   certain header without C++11 std active.
-###############################################################################
-LABEL gdml.version="3.1.2"
-RUN git clone https://github.com/slaclab/gdml src &&\
-    sed -i '70i ADD_DEFINITIONS("-std=c++11")' src/CMakeLists.txt &&\
-    cmake \
-      -DCMAKE_INSTALL_PREFIX=${__prefix} \
-      -B src/build \
-      -S src \
-    &&\
-    cmake \
-      --build src/build \
-      --target install \
-    && rm -rf src
-
-###############################################################################
-# LCDD
-###############################################################################
-LABEL lcdd.version="5.0.0"
-RUN git clone https://github.com/slaclab/lcdd src &&\
-    cmake \
-      -DCMAKE_INSTALL_PREFIX=${__prefix} \
-      -B src/build \
-      -S src \
-    &&\
-    cmake \
-      --build src/build \
-      --target install \
-    && rm -rf src
-
 ###############################################################################
 # MillepedeII
 #   Used for tracker alignment
@@ -295,23 +322,54 @@ RUN git clone --depth 1 --branch V04-13-01 \
     cd / && rm -rf millepede-ii
 
 ###############################################################################
-# slic
-#   Default slic install for folks not needing to develop it.
-#   Also set the GDML_SCHEMA_DIR environment variable so slic knows
-#   where the pre-downloaded schema files are
+# hps-java
+#   need to choose and install a version of hps-java
+#   not sure what the best way to define install destination
+#   for a java project is
 ###############################################################################
-LABEL slic.version="v6.1.1"
-RUN git clone --depth 1 --branch v6.1.1 \
-      https://github.com/slaclab/slic.git src &&\
+RUN mkdir ${__prefix}/hps &&\
+    git clone https://github.com/JeffersonLab/hps-java ${__prefix}/hps/java \
+        --branch hps-java-5.2.1 &&\
+    cd ${__prefix}/hps/java &&\
+    mvn \
+      -DskipTests \
+      -Dcheckstyle.skip \
+    &&\
+    cp -t ${__prefix}/hps/java/ \
+      ~/.m2/repository/org/lcsim/lcio/2.7.4-SNAPSHOT/lcio-2.7.4-SNAPSHOT-bin.jar &&\
+    find distribution/target -type f -name '*-bin.jar'
+ENV HPS_JAVA_BIN_JAR=${__prefix}/hps/java/distribution/target/hps-distribution-5.2.1-bin.jar
+
+###############################################################################
+# install hps-mc for its recipes
+#   use its CMake to copy in madGraph as well as stdhep
+###############################################################################
+RUN git clone https://github.com/JeffersonLab/hps-mc src &&\
     cmake \
+      -DHPSMC_ENABLE_STDHEP=ON \
+      -DHPSMC_ENABLE_MADGRAPH=ON \
       -DCMAKE_INSTALL_PREFIX=${__prefix} \
-      -DINSTALL_DOC=OFF \
-      -DWITH_GEANT4_UIVIS=OFF \
       -B src/build \
       -S src &&\
+    cmake --build src/build --target install
+ENV PYTHONPATH=${PYTHONPATH}:${__prefix}/lib/python
+ENV HPSMC_DIR=${__prefix}
+# copy in a hps-mc config file that users can supply when
+# running hps-mc inside this container
+COPY ./container.cfg /usr/local/share/
+
+###############################################################################
+# install hpstr for tuplization
+###############################################################################
+RUN git clone https://github.com/tomeichlersmith/hpstr src \
+        --branch v0.1.1 \
+        --depth 1 &&\
+    cmake \
+        -DCMAKE_INSTALL_PREFIX=${__prefix} \
+        -B src/build \
+        -S src &&\
     cmake --build src/build --target install &&\
     rm -rf src
-ENV GDML_SCHEMA_DIR=${__prefix}/share
 
 ###############################################################################
 # Generate the linker cache
