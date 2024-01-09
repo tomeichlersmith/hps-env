@@ -53,7 +53,7 @@ jobs:
         images: ${{ env.DOCKER_REPO }}
     -
       name: Build the Image
-      uses: docker/build-push-action@v3
+      uses: docker/build-push-action@v5
       with:
         context: context
         file: context/Dockerfile
