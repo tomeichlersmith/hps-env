@@ -236,11 +236,8 @@ ENV G4ENSDFSTATEDATA="${__prefix}/share/Geant4-10.6.1/data/G4ENSDFSTATE2.2"
 ###############################################################################
 # HepPDT
 ###############################################################################
-ENV HEPPDT_REVISION="99fb1bb9e44e52f4065d8f34e5f3a98fb3d14f85"
 LABEL heppdt.version="3.04.01"
-LABEL heppdt.revision="${HEPPDT_REVISION}"
-RUN git clone https://github.com/slaclab/heppdt src \
-      --branch ${HEPPDT_REVISION} &&\
+RUN git clone https://github.com/slaclab/heppdt src &&\
     cd src &&\
     ./configure \
       --prefix=${__prefix} \
@@ -257,11 +254,8 @@ RUN git clone https://github.com/slaclab/heppdt src \
 #   library now generates a compiler error when gdml tries to access a
 #   certain header without C++11 std active.
 ###############################################################################
-ENV GDML_REVISION="017d19c6488128ad6f663013cfb1be597c556d51"
-LABEL gdml.revision="${GDML_REVISION}"
 LABEL gdml.version="3.1.2"
-RUN git clone https://github.com/slaclab/gdml src \
-      --branch ${GDML_REVISION} &&\
+RUN git clone https://github.com/slaclab/gdml src &&\
     sed -i '70i ADD_DEFINITIONS("-std=c++11")' src/CMakeLists.txt &&\
     cmake \
       -DCMAKE_INSTALL_PREFIX=${__prefix} \
@@ -312,7 +306,7 @@ RUN git clone --depth 1 --branch v6.1.1 \
     cmake \
       -DCMAKE_INSTALL_PREFIX=${__prefix} \
       -DINSTALL_DOC=OFF \
-      -DWITH_GEANT4_UIVIS=ON \
+      -DWITH_GEANT4_UIVIS=OFF \
       -B src/build \
       -S src &&\
     cmake --build src/build --target install &&\
