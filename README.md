@@ -13,12 +13,11 @@ Containerized development environment for HPS software.
     </a>
 </p>
 
-### Note
-We are transitioning to a more integrated design for the environment container
-based on [distrobox](https://github.com/89luca89/distrobox). If you are using `docker`
-or `podman` on your computer, install distrobox and use a container _after_ v1.
+### Versions
+This project using calendar versioning. I try to document the commits that are installed
+in a specific release within those release notes, but I haven't found a way to do that
+automatically yet so I sometimes forget.
 
-The environment script is fully deprecated and can only be used by containers v0.10.0 or earlier.
 
 ## Quick Start
 If you do not intend to develop the containerized environment itself
