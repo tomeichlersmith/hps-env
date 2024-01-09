@@ -327,6 +327,7 @@ RUN git clone --depth 1 --branch V04-13-01 \
 #   not sure what the best way to define install destination
 #   for a java project is
 ###############################################################################
+LABEL hps-java.version="5.2.1"
 RUN mkdir ${__prefix}/hps &&\
     git clone https://github.com/JeffersonLab/hps-java ${__prefix}/hps/java \
         --branch hps-java-5.2.1 &&\
@@ -344,6 +345,7 @@ ENV HPS_JAVA_BIN_JAR=${__prefix}/hps/java/distribution/target/hps-distribution-5
 # install hps-mc for its recipes
 #   use its CMake to copy in MadGraph as well as stdhep
 ###############################################################################
+LABEL hps-mc.version="HEAD"
 RUN git clone https://github.com/JeffersonLab/hps-mc src &&\
     cmake \
       -DHPSMC_ENABLE_STDHEP=ON \
@@ -362,6 +364,7 @@ COPY ./container.cfg /usr/local/share/
 ###############################################################################
 # install hpstr for tuplization
 ###############################################################################
+LABEL hpstr.version="ptrless:v0.1.1"
 RUN git clone https://github.com/tomeichlersmith/hpstr src \
         --branch v0.1.1 \
         --depth 1 &&\
