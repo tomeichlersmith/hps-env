@@ -23,8 +23,9 @@ automatically yet so I sometimes forget.
 If you do not intend to develop the containerized environment itself
 and just wish to use it, all you need is a container runner (and distrobox).
 
-Below, I use the tag `v1.0.0` of the container as an example. This tag can
-be replaced by any version of the image that is later than v1.
+Below, I use the tag `2024.01.10` of the container as an example. This tag can
+be replaced by any version of the image later that v1 or is calendar versioned
+(which begun after v3.3.1).
 
 ### denv
 The [denv](https://github.com/tomeichlersmith/denv) program requires a container 
@@ -33,7 +34,7 @@ the same for all of them.
 
 Initialize a workspace to use this image as the base image for the development environment.
 ```
-denv init tomeichlersmith/hps-env:v1.0.0
+denv init tomeichlersmith/hps-env:2024.01.10
 ```
 Then enter the environment
 ```
@@ -48,7 +49,7 @@ denv echo "Hello from inside the denv"
 Create a distrobox using the image built from this repo on DockerHub.
 ```
 distrobox create \
-  --image tomeichlersmith/hps-env:v1.0.0 \
+  --image tomeichlersmith/hps-env:2024.01.10 \
   --name hps-env \
   --home /full/path/to/hps
 ```
@@ -75,7 +76,7 @@ completed the best option is using the `shell` subcommand.
 Similar to above, it is a two-step procedure. First, we need to download the
 image holding all of the HPS software dependencies.
 ```
-singularity build hps-env-v1.0.0.sif docker://tomeichlersmith/hps-env:v1.0.0
+singularity build hps-env-2024.01.10.sif docker://tomeichlersmith/hps-env:2024.01.10
 ```
 _Side Note_: On SLAC's SDF, the temp directories are not allocated a lot of
 space and singularity/apptainer needs a lot of space, so it is advised to 
@@ -94,7 +95,7 @@ singularity run \
   --env "LS_COLORS=${LS_COLORS}" \
   --hostname hps-env.$(uname -n) \
   --home /full/path/to/hps \ # NO trailing slash
-  hps-env-v1.0.0.sif \
+  hps-env-2024.01.10.sif \
   /bin/bash -i # make shell interactive
 ```
 
