@@ -220,7 +220,6 @@ RUN git clone https://github.com/slaclab/lcdd src &&\
       --build src/build \
       --target install \
     && rm -rf src
-ENV LCDD_DIR=${__prefix}
 
 ###############################################################################
 # slic
@@ -235,6 +234,9 @@ RUN git clone --depth 1 --branch v6.1.1 \
       -DCMAKE_INSTALL_PREFIX=${__prefix} \
       -DINSTALL_DOC=OFF \
       -DWITH_GEANT4_UIVIS=OFF \
+      -DLCDD_DIR=${__prefix} \
+      -DLCIO_DIR=${__prefix} \
+      -DGDML_DIR=${__prefix} \
       -B src/build \
       -S src &&\
     cmake --build src/build --target install &&\
