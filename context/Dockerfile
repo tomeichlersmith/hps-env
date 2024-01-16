@@ -220,6 +220,7 @@ RUN git clone https://github.com/slaclab/lcdd src &&\
       --build src/build \
       --target install \
     && rm -rf src
+ENV LCDD_DIR=${__prefix}
 
 ###############################################################################
 # slic
