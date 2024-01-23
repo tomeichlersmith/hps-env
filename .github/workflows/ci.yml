@@ -57,7 +57,13 @@ jobs:
     -
       name: Determine Image labels
       id: generate_labels
-      run: ./.github/submodule-labels ${{ steps.generate_tag.outputs.labels }} >> $GITHUB_OUTPUT
+      run: |
+        {
+          echo 'labels<<ENDOFLABELS'
+          echo "${{ steps.generate_tag.outputs.labels }}"
+          ./.github/submodule-labels 
+          echo 'ENDOFLABELS'
+        } >> $GITHUB_OUTPUT
     -
       name: Build the Image
       uses: docker/build-push-action@v5
