@@ -1,0 +1,9 @@
+[submodule "context/lcio"]
+	path = context/lcio
+	url = https://github.com/JeffersonLab/hps-lcio
+[submodule "context/mc"]
+	path = context/mc
+	url = https://github.com/Jeffersonlab/hps-mc
+[submodule "context/fieldmaps"]
+	path = context/fieldmaps
+	url = https://github.com/JeffersonLab/hps-fieldmaps.git

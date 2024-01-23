@@ -36,14 +36,17 @@ jobs:
     - 
       name: Get Build Context
       uses: actions/checkout@v4
+      with:
+        submodules: 'recursive'
+        depth: 0
     - 
       name: Cache Docker Layers on GitHub
       uses: actions/cache@v4
       with:
         path: /tmp/.buildx-cache
-        key: ${{ runner.os }}-${{ hashFiles('context/**') }}
+        key: ${{ runner.os }}-${{ hashFiles('context/*') }}
         restore-keys: |
-          ${{ runner.os }}-${{ hashFiles('context/**') }}
+          ${{ runner.os }}-${{ hashFiles('context/*') }}
           ${{ runner.os }}
     -
       name: Determine Image Tags
@@ -51,6 +54,10 @@ jobs:
       uses: docker/metadata-action@v5
       with:
         images: ${{ env.DOCKER_REPO }}
+    -
+      name: Determine Image labels
+      id: generate_labels
+      run: ./.github/submodule-labels ${{ steps.generate_tag.outputs.labels }} >> $GITHUB_OUTPUT
     -
       name: Build the Image
       uses: docker/build-push-action@v5
@@ -61,4 +68,4 @@ jobs:
         cache-from: type=local,src=/tmp/.buildx-cache
         cache-to: type=local,dest=/tmp/.buildx-cache
         tags: ${{ steps.generate_tag.outputs.tags }}
-        labels: ${{ steps.generate_tag.outputs.labels }}
+        labels: ${{ steps.generate_labels.outputs.labels }}

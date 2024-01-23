@@ -1,0 +1,8 @@
+#!/bin/sh
+
+git submodule status |\
+  awk -v label_csv="$1" '{
+    gsub("context/","",$2);
+    gsub(/\(|\)/,"",$3);
+    label_csv = sprintf("hps-env.%s.revision=%s,hps-env.%s.version=%s,%s", $2, $1, $2, $3, label_csv)
+  } END { printf "labels=\"%s\"", label_csv }'
