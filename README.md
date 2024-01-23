@@ -45,6 +45,24 @@ Or simply run a command through the environment rather than your normal shell.
 denv echo "Hello from inside the denv"
 ```
 
+## Usage Tips
+Below are some helpful tips for making your workflow more streamlined when using this container.
+
+### Local Installation
+Since your home directory within the container is the directory with all your HPS stuff in it,
+I would suggest having your install location for any HPS packages you are developing to be 
+`~/.local`. This is a standard Linux install package for users and can easily be inlucded in 
+the `*PATH*` environment variables so the installed libraries and executables are easily accessible.
+
+### Specialize the bashrc
+Again, since your home directory in the container is separate from your regular home directory,
+you can add a bunch of HPS-specific things to the `.bashrc` file that is located in the HPS
+home directory. I would suggest making sure the `*PATH*` variables include `${HOME}/.local`,
+but don't hesitate to take it further and include HPS-specific shell functions and aliases
+to do tasks that you do frequently.
+
+## Other Usage Options (besides `denv`)
+
 ### docker or podman and distrobox
 Create a distrobox using the image built from this repo on DockerHub.
 ```
@@ -117,19 +135,3 @@ Unlike the docker-hosted container above, this one isn't writable, so you will n
 installl anything else into the box. This means you will probably want two side-by-side terminals:
 one inside the box for compiling and running the software and one outside the box for using other
 tools that aren't in the container (like a text editor).
-
-## Usage Tips
-Below are some helpful tips for making your workflow more streamlined when using this container.
-
-### Local Installation
-Since your home directory within the container is the directory with all your HPS stuff in it,
-I would suggest having your install location for any HPS packages you are developing to be 
-`~/.local`. This is a standard Linux install package for users and can easily be inlucded in 
-the `*PATH*` environment variables so the installed libraries and executables are easily accessible.
-
-### Specialize the bashrc
-Again, since your home directory in the container is separate from your regular home directory,
-you can add a bunch of HPS-specific things to the `.bashrc` file that is located in the HPS
-home directory. I would suggest making sure the `*PATH*` variables include `${HOME}/.local`,
-but don't hesitate to take it further and include HPS-specific shell functions and aliases
-to do tasks that you do frequently.
