@@ -107,14 +107,12 @@ RUN mkdir ${JAVA_HOME} ${MVN_HOME} &&\
 ###############################################################################
 # LCIO
 ###############################################################################
-LABEL lcio.verision="hps-lcio:master"
 ENV LCIO_DIR=${__prefix}
 ENV LCIO_INCLUDE_DIRS=${LCIO_DIR}/include
 ENV IO_LCIO_LIBRARY=${LCIO_DIR}/lib/liblcio.so
 ENV LD_LIBRARY_PATH=${LCIO_DIR}/lib:${LD_LIBRARY_PATH}
-RUN mkdir src &&\
-    git clone https://github.com/JeffersonLab/hps-lcio.git src &&\
-    mkdir src/build &&\
+COPY ./lcio /src
+RUN mkdir src/build &&\
     cd src/build &&\
     cmake \
       -DCMAKE_INSTALL_PREFIX=${__prefix} \
@@ -247,9 +245,8 @@ ENV GDML_SCHEMA_DIR=${__prefix}/share
 # download and unpack the fieldmaps
 #   destination is chosen to be what is expected from hps-mc defaults
 ###############################################################################
-RUN git clone https://github.com/JeffersonLab/hps-fieldmaps ${__prefix}/share/fieldmap &&\
-    cd ${__prefix}/share/fieldmap &&\
-    ./unzip.sh
+COPY ./fieldmaps ${__prefix}/share/fieldmap
+RUN cd ${__prefix}/share/fieldmap && ./unzip.sh
 
 ###############################################################################
 # CERN's ROOT
@@ -351,9 +348,8 @@ ENV HPS_JAVA_BIN_JAR=${__prefix}/hps/java/distribution/target/hps-distribution-5
 # install hps-mc for its recipes
 #   use its CMake to copy in MadGraph as well as stdhep
 ###############################################################################
-LABEL hps-mc.version="HEAD"
-RUN git clone https://github.com/JeffersonLab/hps-mc src &&\
-    cmake \
+COPY ./mc /src
+RUN cmake \
       -DHPSMC_ENABLE_STDHEP=ON \
       -DHPSMC_ENABLE_MADGRAPH=ON \
       -DCMAKE_INSTALL_PREFIX=${__prefix} \
