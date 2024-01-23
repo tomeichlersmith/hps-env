@@ -394,19 +394,13 @@ RUN ldconfig -v
 RUN python3 -m pip install --upgrade --no-cache-dir \
         pip &&\
     python3 -m pip install --upgrade --no-cache-dir \
-        autopep8 \
-        Cython \
-        jinja2 \
-        uproot \
-        numpy \
-        matplotlib \
-        mplhep \
-        pandas \
-        psutil \
-        pycodestyle \
-        Sphinx \
-        awkward \
-        "hist[plot]" \
-        "typer[all]" \
-        vector \
-        jupyterlab
+        scikit-hep==2023.10.1 \
+        autopep8==2.0.4 \
+        Cython==3.0.7 \
+        jinja2==3.1.2 \
+        pandas==2.0.3 \
+        psutil==5.9.7 \
+        pycodestyle==2.11.1 \
+        Sphinx==7.1.2 \
+        "typer[all]==0.9.0" \
+        jupyterlab==4.0.10
