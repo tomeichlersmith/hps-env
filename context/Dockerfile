@@ -366,9 +366,9 @@ COPY ./container.cfg /usr/local/share/
 ###############################################################################
 # install hpstr for tuplization
 ###############################################################################
-LABEL hpstr.version="ptrless:v0.1.1"
+LABEL hpstr.version="ptrless:v0.1.2"
 RUN git clone https://github.com/tomeichlersmith/hpstr src \
-        --branch v0.1.1 \
+        --branch v0.1.2 \
         --depth 1 &&\
     cmake \
         -DCMAKE_INSTALL_PREFIX=${__prefix} \
