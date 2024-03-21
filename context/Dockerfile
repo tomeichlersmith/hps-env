@@ -364,20 +364,6 @@ ENV HPSMC_DIR=${__prefix}
 COPY ./container.cfg /usr/local/share/
 
 ###############################################################################
-# install hpstr for tuplization
-###############################################################################
-LABEL hpstr.version="ptrless:v0.1.2"
-RUN git clone https://github.com/tomeichlersmith/hpstr src \
-        --branch v0.1.2 \
-        --depth 1 &&\
-    cmake \
-        -DCMAKE_INSTALL_PREFIX=${__prefix} \
-        -B src/build \
-        -S src &&\
-    cmake --build src/build --target install &&\
-    rm -rf src
-
-###############################################################################
 # Generate the linker cache
 #    This should go AFTER all compiled dependencies so that the ld cache 
 #    contains all of them.
