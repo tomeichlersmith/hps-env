@@ -66,7 +66,7 @@ jobs:
         } >> $GITHUB_OUTPUT
     -
       name: Build the Image
-      uses: docker/build-push-action@v5
+      uses: docker/build-push-action@v6
       with:
         context: context
         file: context/Dockerfile
